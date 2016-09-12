@@ -1,0 +1,29 @@
+[qexec]
+qfep =   ; qfep5 binary path
+qcalc =   ; qcalc5 binary path (version that supports GC)
+
+[mapping]
+bin              = 51
+skip             = 50
+minpts_per_bin   = 10
+temp             = 300.00
+gas_const        = 0.0019872041   ; kcal/mol
+nthread          = 1  ; number of repeats/replicas to map in parallel
+
+[inputs]
+fep_frames       = 51
+num_repeats      = 10
+prefix_rep       = rep_
+relax_dir        = relax
+
+[files]
+en_list_fn        = q_enfiles.list    ;  created by q_genfeps, used by q_mapper when mapping
+qfep_inp          = map_fep.inp
+qfep_out          = map_fep.log    ; also used in q_analysemaps.py
+mapper_logfile    = qm.summary.log
+analysemaps_plots = qam.PlotData.json
+analysedyn_plots  = qad.PlotData.json
+plot_export_dir   = qa_PlotData
+
+[other]
+cfgversion       = 6
