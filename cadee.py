@@ -425,7 +425,7 @@ def main():
             pack_tarballs(outfolder, seeds=args.numseeds)
             print('Success! You find your simpacks in', outfolder)
 
-    if args.traj12ns:
+    elif args.traj12ns:
         if outfolder is None:
             print('You want to create inputs, I dont know where they are')
             print('Please enter the folder here:')

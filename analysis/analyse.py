@@ -209,20 +209,17 @@ data.forEach(function(dp) {
 function draw_plot() {
     var xs1 = [],
         xs2 = [],
-        xs3 = [],
         ys1 = [],
         ys2 = [],
-        ys3 = [],
         names_list = []
 
     data.forEach( function(dp) {
         for (i in dp.barrier) { ys1.push(dp.barrier[i]); xs1.push(dp.name) };
         for (i in dp.exotherm) { ys2.push(dp.exotherm[i]); xs2.push(dp.name) };
-        for (i in dp.revbarr) { ys3.push(dp.exotherm[i]); xs3.push(dp.name) };
         names_list.push(dp.name);
     });
 
-    // data1,data2 and data3 are traces for dg#, dg0 and dg#_reverse, respectively
+    // data1 and data2 are traces for dg# and dg0, respectively
     // each of them contain  number_of_points_per_mutant*number_of_mutant_names  points in 'y' and the same amount of names in 'x' 
     // (x: [name1, name1, name1, name2, name2, name2 ] if 2 names and 3 points per name )
     // (y: [pt1_1, pt1_2, pt1_3, pt2_1, pt2_2, pt2_3]
@@ -246,14 +243,6 @@ function draw_plot() {
             type: 'box',
             hoverinfo: "none",
             marker: { color: '#ccddcc' }
-    };
-    var data3 = {
-            name: 'dG#r',
-            y: ys3,
-            x: xs3,
-            type: 'box',
-            hoverinfo: "none",
-            marker: { color: '#ddddff' }
     };
 
 
@@ -282,11 +271,11 @@ function draw_plot() {
             boxmode: "group",
         };
 
-        Plotly.newPlot('graph', [data1, data2, data3], layout);
+        Plotly.newPlot('graph', [data1, data2], layout);
         plotted = true;
     } else {
         var graph = document.getElementById("graph");
-        graph.data = [data1, data2, data3];
+        graph.data = [data1, data2];
         Plotly.redraw(graph);
     };
 };
@@ -450,7 +439,7 @@ document.getElementById("graph").on('plotly_hover', function(eventData){
     var actions = $("#info-actions");
 
     var html_str = '<p><b>Stats</b></p><table class="pure-table"><thead><tr><th></th><th>Mean</th><th>St.dev.</th><th>Median</th></tr></thead><tbody>';
-    ["dG#", "dG0", "dG#_rev"].forEach(function(n,i) {
+    ["dG#", "dG0"].forEach(function(n,i) {
         var mean = Number(cd[i][x_hovered].mean).toFixed(2);
         var std = Number(cd[i][x_hovered].sd).toFixed(2);
         var med = Number(cd[i][x_hovered].med).toFixed(2);
@@ -510,21 +499,19 @@ conn.close()
 
 
 # get WT averages
-b, e, rb = [], [], []
+b, e = [], []
 for res in results:
     mutant, barr, exo, rbarr = res
     if "wt" in mutant.lower():
         b.append(barr)
         e.append(exo)
-        rb.append(rbarr)
-try:
-    AVG_BARR_WT = sum(b)*1.0/len(b)
-    AVG_EXO_WT = sum(e)*1.0/len(e)
-    AVG_REVBARR_WT = sum(rb)*1.0/len(rb)
-except:
-    AVG_BARR_WT = 0
-    AVG_EXO_WT = 0
-    AVG_REVBARR_WT = 0
+
+if not b or not e:
+    print("No reference ('wt') found in the database... Aborting...")
+    sys.exit(1)
+
+AVG_BARR_WT = sum(b)*1.0/len(b)
+AVG_EXO_WT = sum(e)*1.0/len(e)
 
 # get relative energies
 data = {}
@@ -532,13 +519,11 @@ for res in results:
     mutant, barr, exo, rbarr = res
     mut_name = mutant.split("_")[0].upper()
     if mut_name not in data:
-        data[mut_name] = { "name": mut_name, "barrier": [], "exotherm": [], "revbarr": [] }
+        data[mut_name] = { "name": mut_name, "barrier": [], "exotherm": [] }
     barr_rel = round(barr - AVG_BARR_WT, 1)
     exo_rel = round(exo - AVG_EXO_WT, 1)
-    rbarr_rel = round(rbarr - AVG_REVBARR_WT, 1)
     data[mut_name]["barrier"].append(barr_rel)
     data[mut_name]["exotherm"].append(exo_rel)
-    data[mut_name]["revbarr"].append(rbarr_rel)
 
 dat = """<script> 
 var data = {}
