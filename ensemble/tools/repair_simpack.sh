@@ -72,7 +72,9 @@ for file in $(ls *.log || true)
 do
     if [ -f "${file}.gz" ]
     then
+        echo "both compressed and uncompressed logfile found. removing uncompressed $file "
         /bin/rm $file
+        let found+=1
     fi
 done
 
