@@ -87,8 +87,7 @@ def create_inputs():
 
     # determine the ranges for solute, solvent, and fepatoms
     solute_range, solvent_range = tools.get_solute_and_solvent_ranges(pdbfil)
-    resids = tools.get_fep_resids(pdbfil, fepfil)
-    indexes = tools.get_non_backbone_atoms(pdbfil, resids)
+    indexes = tools.get_fep_atom_pdbindexes(fepfil)
     fepranges = tools.get_ranges(indexes)
 
     tarfile.extractall()
