@@ -19,17 +19,17 @@ then
     module add impi/5.1.3
     module add intel/16.0.2
     module add python/2.7.6
-elif [ "$SNIC_RESOURCE"=="abisko" ]
+elif [ "$SNIC_RESOURCE" == "abisko" ]
 then
     echo -n "for abisko ..."
     module add impi/5.1.3
     module add intel/16.0.2
-elif [ "$SNIC_RESOURCE"=="tintin" ] 
+elif [ "$SNIC_RESOURCE" == "rackham" ] 
 then
-    echo -n "for tintin ..."
-    module add intelmpi/5.1.3
-    module add intel/16.2
-    module add python/2.7.6
+    echo -n "for rackham ..."
+    module add intelmpi/17.1
+    module add intel/17.1
+    module add python/2.7.11
 else
     echo "NO SETTINGS FOR $SNIC_RESOURCE!"
     ERR=1
