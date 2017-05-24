@@ -432,7 +432,7 @@ def create_top_and_fep(qprep5inp, outfolder, in_pdb=None, out_pdb=None,
         # raise Exception('failed to generate topo & pdb')
         raise
 
-    if not os.path.abspath(outfolder) == os.getcwd():
+    if not os.path.samefile(outfolder, os.getcwd()):
         shutil.move(out_log, outfolder)
         shutil.move(out_top, outfolder)
         shutil.move(out_pdb, outfolder)
