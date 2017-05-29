@@ -284,6 +284,7 @@ function update_cadee_cmd() {
     var lmuts = [];
     data.forEach(function(dp) {
         if (dp.name == "wt") { return };
+    
         var resid = dp.name.slice(1,-1);
 
         dp.cadee_actions.libmut.forEach(function(lm) {
@@ -515,6 +516,33 @@ else:
     AVG_BARR_WT = sum(b)*1.0/len(b)
     AVG_EXO_WT = sum(e)*1.0/len(e)
 
+# 3-letter or 1-letter codes?
+def check_aa_code(mut):
+    def is_num(char):
+        try:
+            int(char)
+            return True
+        except ValueError:
+            return False
+
+    code=''
+    for char in mut:
+        if is_num(char):
+            pass
+        else:
+            code += char
+
+    if len(code) == 6:
+        return 3
+    elif len(code) == 2:
+        return 1
+    else:
+        print('WARNING BAD AMINO-ACID CODE FOR {}.'.format(mut))
+        return
+    return
+
+aacode_3ltr = False
+
 # get relative energies
 data = {}
 for res in results:
@@ -526,6 +554,15 @@ for res in results:
     exo_rel = round(exo - AVG_EXO_WT, 1)
     data[mut_name]["barrier"].append(barr_rel)
     data[mut_name]["exotherm"].append(exo_rel)
+    if aacode_3ltr == False and check_aa_code(mut_name) == 3:
+        aacode_3ltr = True
+    elif aacode_3ltr == True and check_aa_code(mut_name) == 1:
+        aacode_3ltr = None
+    else:
+        pass
+        
+if aacode_3ltr == True:
+    vis = vis.replace("var resid = dp.name.slice(1,-1);", "var resid = dp.name.slice(3,-3);")
 
 dat = """<script> 
 var data = {}
