@@ -654,11 +654,11 @@ class Master(object):
 def main(inputs, alpha=None, hij=None, force_map=None):
     """ Ensemble Start, Divides Work on Ranks """
     try:
-        tmp = os.environ["SNIC_TMP"]
+        tmp = os.environ["CADEE_TMP"]
         if tmp == '':
             raise KeyError
     except KeyError:
-        for tmp in ['/scratch/', '/tmp/', '/temp/', '/dev/shm']:
+        for tmp in ['/scratch/', '/tmp/', '/dev/shm']:
             if os.path.isdir(tmp):
                 break
 
