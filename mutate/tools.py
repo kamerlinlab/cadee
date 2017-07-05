@@ -10,11 +10,12 @@ Computer-Aided Directed Evolution of Enzymes.
 
 
 from __future__ import print_function
-import os
-import math
-from executables import exe
 
 import logging
+import math
+import os
+
+from executables import exe
 
 __author__ = "Beat Amrein"
 __email__ = "beat.amrein@gmail.com"

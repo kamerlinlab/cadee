@@ -34,7 +34,7 @@ import logging
 __author__ = "Beat Amrein"
 __email__ = "beat.amrein@gmail.com"
 
-VERSION = '0.7'
+VERSION = '0.7.1'
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger()
@@ -446,4 +446,9 @@ def main():
             pack_tarballs(outfolder, seeds=args.numseeds)
             print('Success! You find your simpacks in', outfolder)
 
-main()
+
+if __name__ == "__main__":
+    main()
+
+def cadee():
+    main()

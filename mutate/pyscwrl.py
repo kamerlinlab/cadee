@@ -28,7 +28,7 @@ NLC = '\n'
 
 def run_scwrl(out_pdb, out_log, in_pdb, in_seq):
     """Run SCWRL4. Use 'Scwrl4' - executable from $PATH"""
-    import executables.exe as exe
+    import executables as exe
 
     scwrl_exe = exe.which('Scwrl4')
     if scwrl_exe is None:
@@ -132,7 +132,7 @@ def babel_pdb_for_scwrl(wtpdb, proper_pdb='proper.pdb',
     temp_pdb = '"' + temp_pdb + '"'
 
     import config
-    import executables.exe
+    import executables
 
     # locate babel-exe
     babel_exe = executables.exe.which('babel')
