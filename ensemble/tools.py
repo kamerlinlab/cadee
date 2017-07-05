@@ -144,7 +144,6 @@ class Results(object):
         return items
 
     def sql(self):
-        # TODO: write this routine or the class more sophisitcated
         return self.items()
 
 
@@ -164,7 +163,6 @@ def report_results(results):
             logger.warning('Rank0 reports results!')
             raise Exception('Rank0 reported results!')
 
-
     else:
         logger.debug('Not in MPI Session: Inefficient db access.')
         logger.info('results: %s', results.sql())
@@ -174,7 +172,6 @@ def report_results(results):
 
 
 class LogFileHandler(logging.StreamHandler):
-    # TODO: add errorlogging
     def __init__(self, logfile=None):
 
         self.logfile = None
@@ -185,7 +182,7 @@ class LogFileHandler(logging.StreamHandler):
                 else:
                     try:
                         self.logfile = open(logfile, 'w')
-                    except:
+                    except (IOError, TypeError):
                         self.logfile = None
 
         logging.StreamHandler.__init__(self)
