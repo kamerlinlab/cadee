@@ -8,9 +8,9 @@ sleep 1
 
 CADEE_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-echo "checking CADEE Ensemblesimulation setup ..."
+echo "Checking CADEE Ensemble Simulation setup ..."
 
-echo "check python version"
+echo "Check Python version"
 
 python -c 'import sys; print(sys.version_info[:])'  | grep -q "(2, 7,"
 if [ $? -ne 0 ]
@@ -18,8 +18,7 @@ then
     echo 'ERROR: Need python 2.7'
 fi
 
-echo "check if qscripts are in place..."
-echo "================================="
+echo "Checking qscripts ..."
 cd $CADEE_DIR
 
 cd qscripts
@@ -39,19 +38,19 @@ qfep_sq=$(grep "^qfep = "  qscripts.cfg | wc -l )
 
 if [ $qfep_sq -eq 0 ]
 then
-    echo "qscripts has no qfep-executable defined. please fix this."
+    echo "Error: qscripts has no qfep-executable defined. please fix this."
     fix_sq
 elif [ $qfep_sq -ne 1 ]
 then
-    echo "qscripts has two or more qfep-executables defined. i dont know which to check. please fix this."
+    echo "Error: qscripts has two or more qfep-executables defined. Please fix this."
     fix_sq
 fi
 
 
-echo "check if qscripts / qfep5 is in place..."
+echo "Check if qscripts / qfep5 is in place..."
 
 function fix_qfep(){
-    echo 'Fatal: qscripts is not configured properly. (qfep5)'
+    echo 'Error: qscripts is not configured properly. (qfep5)'
     exit 1
 }
 
@@ -60,18 +59,18 @@ qfep_exe=$(grep "^qfep = " qscripts.cfg | sed "s/.*qfep = //g")
 
 if [ ! -f $qfep_exe ]
 then
-    echo "qfep exe does not exist ($qfep_exe)"
+    echo "Error: qfep exe does not exist ($qfep_exe)"
     fix_qfep
 fi
 
 if [ ! -x $qfep_exe ]
 then
-    echo "qfep exe is not executable, please fix this ($qfep_exe)"
+    echo "Error: qfep exe is not executable, please fix this ($qfep_exe)"
     fix_qfep
 fi
 
 
-echo "check if openbabel is in path"
+echo "Check if OpenBabel is in path"
 echo "============================="
 
 babel=$(which babel)
@@ -79,13 +78,13 @@ if [ $? -eq 0 ]
 then
     echo 'Found a babel executable.'
 else
-    echo 'Fatal: could not find babel in the environment!'
-    echo 'Please install openbabel and make sure it is in $PATH'
+    echo 'Error: could not find babel in the environment!'
+    echo '       Please install openbabel and make sure it is in $PATH'
     exit 1
 fi
 
 
-echo "check if executables are in place..."
+echo "Check if Q - executables are in place..."
 echo "===================================="
 
 cd $CADEE_DIR
@@ -117,7 +116,7 @@ then
     fix_q
 fi
 
-echo "will now source the init.sh script in ./ensemble:"
+echo "Will now source the init.sh script in ./ensemble:"
 echo "================================================="
 
 cd $CADEE_DIR/ensemble
