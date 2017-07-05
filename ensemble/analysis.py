@@ -17,6 +17,7 @@ import gzip
 import tools
 import numpy as np
 
+
 __author__ = "Beat Amrein, Miha Purg"
 __email__ = "beat.amrein@gmail.com, miha.purg@gmail.com"
 
@@ -27,19 +28,29 @@ DEBUG = False
 
 NLC = '\n'
 
-QSCRIPTS_DIR = os.path.dirname(os.path.realpath(__file__)) + "/qscripts/"
 
-if not os.path.isdir(QSCRIPTS_DIR):
-    print('FATAL: please copy qscripts to', QSCRIPTS_DIR)
-    raise Exception('No qscripts')
+try:
+    import qscripts
+    from qscripts import q_genfeps
+    from qscripts import q_mapper
+    from qscripts import q_analysemaps
+    from qscripts import q_analysedyns
+    from qscripts import g_genrelax
 
-sys.path.insert(1, QSCRIPTS_DIR)
+except ImportError:
+    QSCRIPTS_DIR = os.path.dirname(os.path.realpath(__file__)) + "/../qscripts/"
 
-import q_genfeps       # NOPEP8
-import q_mapper        # NOPEP8
-import q_analysemaps   # NOPEP8
-import q_analysedyns   # NOPEP8
-import q_genrelax      # NOPEP8
+    if not os.path.isdir(QSCRIPTS_DIR):
+        print('FATAL: please copy qscripts to {}'.format(QSCRIPTS_DIR))
+        raise Exception('No qscripts: %s', QSCRIPTS_DIR)
+
+    sys.path.insert(1, QSCRIPTS_DIR)
+
+    import q_genfeps       # NOPEP8
+    import q_mapper        # NOPEP8
+    import q_analysemaps   # NOPEP8
+    import q_analysedyns   # NOPEP8
+    import q_genrelax      # NOPEP8
 
 
 class MapSettings(object):
