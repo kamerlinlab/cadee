@@ -74,37 +74,45 @@ class _QScriptsConfig(object):
 
 
 def get_exec_path(name):
-    paths=[]
-    for path in os.environ["PATH"].split(os.pathsep):                       
-        path=path.strip('"')                                                
-        if not os.path.lexists(path):
-            continue
-        for ex in os.listdir(path):                                         
-             if name in ex:                                              
-                  ex = os.path.join(path,ex)                                  
-                  if not ex in paths:
-                      paths.append(ex)
-
-    if not paths:
-        print "No '%s' executable was found in your PATH. Please add the path to qfep to the config file manually." % name
-    else:
-        print "These '%s' executables were found in your PATH. Choose the correct one or write the path.\n" % name
-        for i,path in enumerate(paths):
-            print "      [%d] %s" % (i, path)
-        path=""
-        while not path:
-            try:
-                inp=raw_input("? ")
-                i=int(inp)
-                path=paths[i]
-            except ValueError:
-                if inp:
-                    path=inp
-            except IndexError:
-                pass
-        return path
-    return ""
-
+    #paths=[]
+    #for path in os.environ["PATH"].split(os.pathsep):                       
+    #    path=path.strip('"')                                                
+    #    if not os.path.lexists(path):
+    #        continue
+    #    for ex in os.listdir(path):                                         
+    #         if name in ex:                                              
+    #              ex = os.path.join(path,ex)                                  
+    #              if not ex in paths:
+    #                  paths.append(ex)
+    #
+    #if not paths:
+    #    print "No '%s' executable was found in your PATH. Please add the path to qfep to the config file manually." % name
+    #else:
+    #    print "These '%s' executables were found in your PATH. Choose the correct one or write the path.\n" % name
+    #    for i,path in enumerate(paths):
+    #        print "      [%d] %s" % (i, path)
+    #    path=""
+    #    while not path:
+    #        try:
+    #            inp=raw_input("? ")
+    #            i=int(inp)
+    #            path=paths[i]
+    #        except ValueError:
+    #            if inp:
+    #                path=inp
+    #        except IndexError:
+    #            pass
+    #    return path
+    #return ""
+    import cadee.executables.exe as exe
+    path = exe.which(name)
+    if path is None:
+        path = exe.which(name+'5')
+    if path is None:
+        print('Binary not found: ', name)
+        raise (Exception, 'Please install %s ', name)
+    print(path)
+    return path
 
 
 def main():
@@ -126,14 +134,12 @@ def main():
     print "\n\nThe following config file was created with some default values:\n%s" % _CFG_FILE
 
 
-
-if __name__  == "__main__":
+if __name__  == "__main__" or not os.path.isfile(_CFG_FILE):
     try:
         main()
     except KeyboardInterrupt:
         print "\nCtrl-C detected. Quitting..."
         sys.exit(1)
-else:  # imported
-    # This variable is imported from other modules. 
-    QScriptsConfig = _QScriptsConfig(_CFG_FILE)
+ 
+QScriptsConfig = _QScriptsConfig(_CFG_FILE)
 

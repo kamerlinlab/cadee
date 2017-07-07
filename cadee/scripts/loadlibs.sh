@@ -56,18 +56,22 @@ fi
 
 # Make sure, that the qdyn5 executable is where CADEE is expecting it to be...
 
-scriptdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+installdir=$(python -c 'import cadee, os; print os.path.dirname(os.path.abspath(cadee.__file__))')
 
-qdynexe="$scriptdir/../executables/q/qdyn5"
+echo "Installdir: $installdir"
+ 
+qdynexe=$(python -c 'import cadee.executables.exe as exe; print exe.which("qdyn5")')
+
+echo "Qdynexe: $qdynexe"
 
 if ! [ -x "$qdynexe" ]
 then    
     ERR=2
     echo
-    echo 'CANT FIND executable qdyn5!'
+    echo 'Cannot find executable qdyn5!'
     echo ''
     echo "You must copy it into place and flag it executable:"
-    echo "$qdynexe"
+    echo "  $installdir/executables/q/qdyn5"
 else
     echo "Getting MD5 of qdyn5: $qdynexe) ... "
     md5sum $qdynexe
@@ -79,7 +83,6 @@ echo " checking if mpi4py is available ... "
 python -c "import mpi4py"
 if [ $? -ne 0 ]
 then
-    ERR=3
     echo ''
     echo 'ERROR:'
     echo 'mpi4py is not available!'
@@ -95,7 +98,7 @@ then
 
     sleep 5
 
-    wget https://pypi.python.org/packages/26/b4/1a9678ec113b5c654477354169131c88be3f65e665d7de7c5ef306f2f2a5/mpi4py-1.3.1.tar.gz
+    curl -O https://pypi.python.org/packages/26/b4/1a9678ec113b5c654477354169131c88be3f65e665d7de7c5ef306f2f2a5/mpi4py-1.3.1.tar.gz
     tar xf mpi4py-1.3.1.tar.gz
     cd mpi4py-1.3.1
     python setup.py install --user
@@ -107,28 +110,33 @@ then
     then
         echo 'Great, mpi4py works now!'
         ERR=0
+    else
+        ERR=3
     fi
 fi
 
-# Checking if qscripts are where they are supposed to be and that they are properly configured ...
+# Checking if qscripts are where they are supposed to be and that they are configured ...
 
-if [ ! -d qscripts ]
+if [ ! -d $installdir/qscripts ]
 then
     ERR=4
     echo ''
     echo 'ERROR:'
-    echo 'qscripts not found'
+    echo "qscripts not found"
 else
-    if [ ! -f 'qscripts/qscripts.cfg' ]
+    if [ ! -f "$installdir/qscripts/qscripts.cfg" ]
     then
         ERR=5
         echo ''
         echo 'ERROR:'
         echo 'qscripts not configured (missing qscripts.cfg)'
+        echo ''
+        echo "Please run: "
+        echo "  \"python $installdir/qscripts/qscripts_config.py\""
     fi
 fi
 
-# Checking the python version. CADEE has been tested with Python version 2.7 ...
+# Checking the python version. CADEE hwas tested with Python version 2.7, only.
 
 python -c 'import sys; print(sys.version_info[:])'  | grep -q "(2, 7,"
 if [ $? -ne 0 ]
@@ -137,7 +145,7 @@ then
     ERR=6 
 fi
 
-# Checking if all good ...
+# Checking if we had problems ...
 
 if [ $ERR -eq 0 ]
 then
@@ -145,7 +153,7 @@ then
 else
     if [ $ERR -eq 1 ]                  # ... we gotta tell the user the bad news ...
     then
-        echo "There is an error with your configuration $scriptdir/init.sh"
+        echo "There is an error with your configuration of cadee in $installdir !"
     fi
 
     echo "Please fix and rerun!"

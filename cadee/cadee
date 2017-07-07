@@ -1,0 +1,90 @@
+#!/usr/bin/env python
+from __future__ import print_function
+
+"""CADEE Command Line Interface.
+
+Use this script to prepare, run and analyze CADEE simulations.
+
+Author: {0} ({1})
+
+This program is part of CADEE, the framework for
+Computer-Aided Directed Evolution of Enzymes.
+"""
+
+__author__ = "Beat Amrein"
+__email__ = "beat.amrein@gmail.com"
+
+import sys
+import os
+
+# checking if qscripts is configured, or configure it now:
+qscripts = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'qscripts')
+if not os.path.isfile(os.path.join(qscripts,'qscripts.cfg')):
+    import cadee.qscripts.qscripts_config
+
+
+def usage():
+    print()
+    print()
+    print('Usage:')
+    print()
+    print('      cadee [ prep(p) | dyn(d) | analyse(a) | tool(t) ]')
+    #print('      cadee [ dyn(d) | dynp(dp) | prep(p) | analyse(a) | tool(t) ]')
+    sys.exit(1)
+
+if len(sys.argv) < 2:
+    usage()
+
+cmd = sys.argv[1].lower()
+sys.argv.remove(cmd)
+
+if cmd == 'dyn' or cmd == 'd':
+    import cadee.dyn.ensemble as ens
+    ens.parse_args()
+
+elif cmd == 'dynp' or cmd == 'dp':
+    print('dynp not activated. use dyn instead.')
+    usage()
+
+elif cmd == 'prep' or cmd == 'p':
+    import cadee.prep.prep as prep
+    prep.main()
+
+elif cmd == 'analyse' or cmd == 'analyze' or cmd == 'a':
+    import analyse
+    analyse.analyse(sys.argv)
+
+elif cmd == 'tool' or cmd == 't':
+    def tool_usage(badtool=False):
+        print()
+        if badtool:
+            print('Error')
+	    print('    Unknown Tool:', badtool)
+        print('    Available Tools: lossy_repack(lr) | repair_simpack(rs)')
+        sys.exit(1)
+
+    if len(sys.argv) < 2:
+        tool_usage()
+
+    subcmd = sys.argv[1].lower()
+    sys.argv.remove(subcmd)
+    sys.argv.remove(sys.argv[0])
+    import os
+   
+    shell_command = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'scripts')
+
+    if   subcmd == 'delete_tempfiles' or subcmd == 'dt':
+        shell_command = os.path.join(shell_command, 'delete_tempfiles.sh')
+    elif subcmd == 'lossy_repack'     or subcmd == 'lr':
+        shell_command = os.path.join(shell_command, 'lossy_repack.sh')
+    elif subcmd == 'repair_simpack'   or subcmd == 'rs':
+        shell_command = os.path.join(shell_command, 'repair_simpack.sh')
+    else:
+        tool_usage(badtool=subcmd)
+
+    shell_command = shell_command + " " + " ".join(sys.argv)
+    
+    os.system(shell_command)
+
+else:
+    usage()

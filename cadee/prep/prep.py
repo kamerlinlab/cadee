@@ -22,12 +22,12 @@ import shutil
 import tarfile
 import tempfile
 import time
-import mutate.qprep5 as qprep5
-import mutate.tools as tools
-import mutate.genseqs as genseqs
-import mutate.pyscwrl as scwrl
-import mutate.config as config
-import mutate.alascan as alascan
+import qprep5 as qprep5
+import tools as tools
+import genseqs as genseqs
+import pyscwrl as scwrl
+import config as config
+import alascan as alascan
 
 import logging
 
@@ -153,7 +153,7 @@ def main():
         return True
 
     # TODO: load defaults from somewhere
-    parser = argparse.ArgumentParser('This is the CADEE UserInterface, Version ' + VERSION)
+    parser = argparse.ArgumentParser('CADEE: Simpack Preparation.')
 
     # Minimum Inputfiles needed
     parser.add_argument('wtpdb', action='store', type=argparse.FileType('r'),
@@ -448,7 +448,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
-
-def cadee():
     main()

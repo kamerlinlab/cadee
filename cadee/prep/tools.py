@@ -15,7 +15,7 @@ import logging
 import math
 import os
 
-from executables import exe
+from cadee.executables import exe
 
 __author__ = "Beat Amrein"
 __email__ = "beat.amrein@gmail.com"

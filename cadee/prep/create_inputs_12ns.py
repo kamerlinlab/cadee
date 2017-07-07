@@ -24,7 +24,7 @@ logger = logging.getLogger('create_inputs')
 
 
 templatetar = os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                           'lib/template_12ns.tar.bz2')
+                           '../lib/template_12ns.tar.bz2')
 
 if not os.path.isfile(templatetar):
     raise Exception('Template-Tar does not exist:', templatetar)

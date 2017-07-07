@@ -143,7 +143,7 @@ class Worker(object):
 
     def _executable(self):
         """ Create executable and mark it executable """
-        from executables import exe
+        from cadee.executables import exe
         exe = exe.which('qdyn5')
         if exe is None:
             raise 'qdyn5 not found'
@@ -727,9 +727,9 @@ def priorize(inputs):
     return inputs
 
 
-if __name__ == "__main__":
+def parse_args():
     # TODO: load defaults from somewhere
-    parser = argparse.ArgumentParser('This is the CADEE EnsembleLauncher.')
+    parser = argparse.ArgumentParser('CADEE: Simpack computation.')
 
     # TODO: DocOpt could simplty my life
     # Minimum Inputfiles needed
@@ -801,3 +801,6 @@ if __name__ == "__main__":
         main(inputs, alpha, hij, args.force_map)
     else:
         main(None, alpha, hij, args.force_map)
+
+if __name__ == "__main__":
+    parse_args()
