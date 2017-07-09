@@ -25,32 +25,50 @@
 #
 
 
+# tempoary file shall be stored in ...
+export CADEE_TMP=$SNIC_TMP
+
+# set to 'ignore', to ignore this.
+CADEE_SITE=$SNIC_RESOURCE
+CADEE_SITE=ignore
+
 echo -n "Initializing ... "
 ERR=0
-if [ -z $SNIC_RESOURCE ]
+if [ -z $CADEE_SITE ]
 then
-    echo "ENVIROMENT VARIABLE SNIC_RESOURCE NOT SET!"
-    echo "UNKNOWN MACHINE! PLEASE ADJUST SETTINGS IN $0"
+    echo "Environment variable CADEE_SITE is not set!"
+    echo "UNKNOWN MACHINE! Please adjust settings in $0"
     ERR=1
-elif [ "$SNIC_RESOURCE" == "triolith" ]
+elif [ "$CADEE_SITE" == "triolith" ]
 then
     echo  "for triolith ..."
     module add impi/5.1.3
     module add intel/16.0.2
     module add python/2.7.6
+<<<<<<< HEAD:cadee/scripts/loadlibs.sh
 elif [ "$SNIC_RESOURCE" == "abisko" ]
+=======
+elif [ "$CADEE_SITE" == "abisko" ]
+>>>>>>> origin/v0.7.5:ensemble/init.sh
 then
     echo -n "for abisko ..."
     module add impi/5.1.3
     module add intel/16.0.2
+<<<<<<< HEAD:cadee/scripts/loadlibs.sh
 elif [ "$SNIC_RESOURCE" == "tintin" ]
+=======
+elif [ "$CADEE_SITE" == "tintin" ] 
+>>>>>>> origin/v0.7.5:ensemble/init.sh
 then
     echo -n "for tintin ..."
     module add intelmpi/5.1.3
     module add intel/16.2
     module add python/2.7.6
+elif [ "$CADEE_SITE" == "ignore" ] 
+then
+    echo "Ignoring site-settings $(hostname) etc. ..."
 else
-    echo "NO SETTINGS FOR $SNIC_RESOURCE!"
+    echo "NO SETTINGS FOR $CADEE_SITE!"
     ERR=1
 fi
 
@@ -74,7 +92,7 @@ then
     echo "  $installdir/executables/q/qdyn5"
 else
     echo "Getting MD5 of qdyn5: $qdynexe) ... "
-    md5sum $qdynexe
+    md5sum $qdynexe || md5 $qdynexe
 fi
 
 # Make sure, that mpi4py is installed, and if its not installed, we will try to downlaod and install it ...
@@ -88,10 +106,10 @@ then
     echo 'mpi4py is not available!'
     echo
     echo 'You have to install it!'
-    echo '  wget https://pypi.python.org/packages/26/b4/1a9678ec113b5c654477354169131c88be3f65e665d7de7c5ef306f2f2a5/mpi4py-1.3.1.tar.gz'
+    echo '  curl -O https://pypi.python.org/packages/26/b4/1a9678ec113b5c654477354169131c88be3f65e665d7de7c5ef306f2f2a5/mpi4py-1.3.1.tar.gz'
     echo '  tar xf mpi4py-1.3.1.tar.gz'
     echo '  cd mpi4py-1.3.1'
-    echo '  python setup.py install --user'
+    echo '  python setup.py install --user --prefix=""'
     echo '  cd -'
 
     echo 'I will try to do that for you in 5s (press ctrl+c to interrupt):'
@@ -101,7 +119,7 @@ then
     curl -O https://pypi.python.org/packages/26/b4/1a9678ec113b5c654477354169131c88be3f65e665d7de7c5ef306f2f2a5/mpi4py-1.3.1.tar.gz
     tar xf mpi4py-1.3.1.tar.gz
     cd mpi4py-1.3.1
-    python setup.py install --user
+    python setup.py install --user --prefix=""
     cd -
 
     echo 'Done! Checking if it works:'
@@ -161,7 +179,191 @@ else
     #  ... and finally and setting the error level.
     if [ -z "$PS1" ]
     then
+<<<<<<< HEAD:cadee/scripts/loadlibs.sh
         echo "This script runs without login-shell."
+=======
+        echo "This script runs with login-shell"
+        exit $ERR
+>>>>>>> origin/v0.7.5:ensemble/init.sh
+    else
+        [[ $_ != $0 ]] && echo "Script is being sourced. Error: $ERR." || exit $ERR
+    fi
+fi
+#!/usr/bin/env bash
+
+# Load and check libraries for ensemble run.
+
+# Author: Beat Amrein, beat.amrein@gmail.com
+# This script is part of CADEE.
+
+#
+# Please read the following instructions carefully!
+#
+#
+#
+# INSTRUCTIONS - PART 1: Cluster Environment
+#
+# This script is intended to run on your cluster.
+# Often, a compute-cluster has different setup, than a normal
+# computer, for example a module-management system.
+#
+# The following lines are different examples for SNIC clusters.
+# The SNIC environment contains a variable SNIC_RESOURCE that
+# indicates which system the script is running on.
+#
+# You must adjust the script to you needs and to the modules you
+# used to compile Q and mpi4py (if you did so yourself).
+#
+
+
+# tempoary file shall be stored in ...
+export CADEE_TMP=$SNIC_TMP
+
+# set to 'ignore', to ignore this.
+CADEE_SITE=$SNIC_RESOURCE
+CADEE_SITE=ignore
+
+echo -n "Initializing ... "
+ERR=0
+if [ -z $CADEE_SITE ]
+then
+    echo "Environment variable CADEE_SITE is not set!"
+    echo "UNKNOWN MACHINE! Please adjust settings in $0"
+    ERR=1
+elif [ "$CADEE_SITE" == "triolith" ]
+then
+    echo  "for triolith ..."
+    module add impi/5.1.3
+    module add intel/16.0.2
+    module add python/2.7.6
+elif [ "$CADEE_SITE" == "abisko" ]
+then
+    echo -n "for abisko ..."
+    module add impi/5.1.3
+    module add intel/16.0.2
+elif [ "$CADEE_SITE" == "tintin" ] 
+then
+    echo -n "for tintin ..."
+    module add intelmpi/5.1.3
+    module add intel/16.2
+    module add python/2.7.6
+elif [ "$CADEE_SITE" == "ignore" ] 
+then
+    echo "Ignoring site-settings $(hostname) etc. ..."
+else
+    echo "NO SETTINGS FOR $CADEE_SITE!"
+    ERR=1
+fi
+
+# Make sure, that the qdyn5 executable is where CADEE is expecting it to be...
+
+installdir=$(python -c 'import cadee, os; print os.path.dirname(os.path.abspath(cadee.__file__))')
+
+echo "Installdir: $installdir"
+ 
+qdynexe=$(python -c 'import cadee.executables.exe as exe; print exe.which("qdyn5")')
+
+echo "Qdynexe: $qdynexe"
+
+if ! [ -x "$qdynexe" ]
+then    
+    ERR=2
+    echo
+    echo 'Cannot find executable qdyn5!'
+    echo ''
+    echo "You must copy it into place and flag it executable:"
+    echo "  $installdir/executables/q/qdyn5"
+else
+    echo "Getting MD5 of qdyn5: $qdynexe) ... "
+    md5sum $qdynexe || md5 $qdynexe
+fi
+
+# Make sure, that mpi4py is installed, and if its not installed, we will try to downlaod and install it ...
+
+echo " checking if mpi4py is available ... "
+python -c "import mpi4py"
+if [ $? -ne 0 ]
+then
+    echo ''
+    echo 'ERROR:'
+    echo 'mpi4py is not available!'
+    echo
+    echo 'You have to install it!'
+    echo '  curl -O https://pypi.python.org/packages/26/b4/1a9678ec113b5c654477354169131c88be3f65e665d7de7c5ef306f2f2a5/mpi4py-1.3.1.tar.gz'
+    echo '  tar xf mpi4py-1.3.1.tar.gz'
+    echo '  cd mpi4py-1.3.1'
+    echo '  python setup.py install --user --prefix=""'
+    echo '  cd -'
+
+    echo 'I will try to do that for you in 5s (press ctrl+c to interrupt):'
+
+    sleep 5
+
+    curl -O https://pypi.python.org/packages/26/b4/1a9678ec113b5c654477354169131c88be3f65e665d7de7c5ef306f2f2a5/mpi4py-1.3.1.tar.gz
+    tar xf mpi4py-1.3.1.tar.gz
+    cd mpi4py-1.3.1
+    python setup.py install --user --prefix=""
+    cd -
+
+    echo 'Done! Checking if it works:'
+    python -c "import mpi4py"
+    if [ $? -eq 0 ]
+    then
+        echo 'Great, mpi4py works now!'
+        ERR=0
+    else
+        ERR=3
+    fi
+fi
+
+# Checking if qscripts are where they are supposed to be and that they are configured ...
+
+if [ ! -d $installdir/qscripts ]
+then
+    ERR=4
+    echo ''
+    echo 'ERROR:'
+    echo "qscripts not found"
+else
+    if [ ! -f "$installdir/qscripts/qscripts.cfg" ]
+    then
+        ERR=5
+        echo ''
+        echo 'ERROR:'
+        echo 'qscripts not configured (missing qscripts.cfg)'
+        echo ''
+        echo "Please run: "
+        echo "  \"python $installdir/qscripts/qscripts_config.py\""
+    fi
+fi
+
+# Checking the python version. CADEE hwas tested with Python version 2.7, only.
+
+python -c 'import sys; print(sys.version_info[:])'  | grep -q "(2, 7,"
+if [ $? -ne 0 ]
+then
+    echo 'ERROR: Need python 2.7'
+    ERR=6 
+fi
+
+# Checking if we had problems ...
+
+if [ $ERR -eq 0 ]
+then
+    echo " ... OK! you are set!"       # ... perfect :).
+else
+    if [ $ERR -eq 1 ]                  # ... we gotta tell the user the bad news ...
+    then
+        echo "There is an error with your configuration of cadee in $installdir !"
+    fi
+
+    echo "Please fix and rerun!"
+
+    #  ... and finally and setting the error level.
+    if [ -z "$PS1" ]
+    then
+        echo "This script runs with login-shell"
+        exit $ERR
     else
         [[ $_ != $0 ]] && echo "Script is being sourced. Error: $ERR." || exit $ERR
     fi

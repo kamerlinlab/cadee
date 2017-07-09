@@ -118,6 +118,15 @@ def pack_tarballs(parentdir, seeds=1):
             else:
                 logger.warning('Couldnt find "random_seed" in inputs of %s', mutant)
                 pass
+        
+        # Now removing the temporary files from the harddrive ...
+        for fil in os.listdir('.'):
+            os.remove(fil)
+        os.chdir(parentdir)
+        os.removedirs(mutant)
+
+
+
 
 
 def check_int_or_float(value):

@@ -80,7 +80,7 @@ def check_input(qprep5_inp, qprep5_lib, outfile=False):
 
         if key == 'readlib' or key == 'rl':
             lib = line.split(None, 1)[1]
-            if not os.path.isfile(lib):
+            if not os.path.isfile(lib) or qprep5_lib != os.path.abspath(lib)[0:len(qprep5_lib)]:
                 needs_mod += "readlib: path adjust"+NLC
                 lib = lib.split('/')[-1]
                 combo = qprep5_lib + '/' + lib
@@ -89,12 +89,17 @@ def check_input(qprep5_inp, qprep5_lib, outfile=False):
                     logger.error('Library Not Found: %s', lib)
                     logger.error('Library Not Found: %s', combo)
                     raise Exception
+                elif len(combo) > 80:
+                    logger.error('Full Library path must not exceed 80 characters. Found: %s', len(combo))
+                    logger.error('Path: %s (%s)', len(qprep5_lib), qprep5_lib)
+                    logger.error('Filename of prmlib: %s', len(lib))
+                    raise Exception
                 else:
                     line = 'readlib ' + combo
 
         elif key == 'readprm' or key == 'rprm':
             prm = line.split(None, 1)[1]
-            if not os.path.isfile(prm):
+            if not os.path.isfile(prm) or qprep5_lib != os.path.abspath(prm)[0:len(qprep5_lib)]:
                 needs_mod += "readprm: path adjust"+NLC
                 prm = prm.split('/')[-1]
                 combo = qprep5_lib + '/' + prm
@@ -102,6 +107,11 @@ def check_input(qprep5_inp, qprep5_lib, outfile=False):
                 if not os.path.isfile(qprep5_lib + '/' + prm):
                     logger.error('Parameter Not Found: %s', prm)
                     logger.error('Parameter Not Found: %s', combo)
+                    raise Exception
+                elif len(combo) > 80:
+                    logger.error('Full path to prmlib must not exceed 80 characters. Found: %s', len(combo))
+                    logger.error('Path: %s (%s)', len(qprep5_lib), qprep5_lib)
+                    logger.error('Filename of prmlib: %s', len(prm))
                     raise Exception
                 else:
                     line = 'readprm ' + combo
@@ -422,7 +432,7 @@ def create_top_and_fep(qprep5inp, outfolder, in_pdb=None, out_pdb=None,
         # raise Exception('failed to generate topo & pdb')
         raise
 
-    if not os.path.abspath(outfolder) == os.getcwd():
+    if not os.path.samefile(outfolder, os.getcwd()):
         shutil.move(out_log, outfolder)
         shutil.move(out_top, outfolder)
         shutil.move(out_pdb, outfolder)

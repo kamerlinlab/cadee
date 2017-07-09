@@ -493,10 +493,10 @@ class Master(object):
             os.makedirs(self.tmp)
 
     def _shutdown(self):
-        logger.info('will shutdown! syncing.')
+        logger.info('Will shutdown! Syncing.')
         self.db.close()
-        logger.debug('database connection closed')
-        logger.info("master exiting.")
+        logger.debug('Database connection closed.')
+        logger.info("Master exiting.")
         sys.exit()
 
     # TODO: Does not work for slaves
@@ -654,18 +654,18 @@ class Master(object):
 def main(inputs, alpha=None, hij=None, force_map=None):
     """ Ensemble Start, Divides Work on Ranks """
     try:
-        tmp = os.environ["SNIC_TMP"]
+        tmp = os.environ["CADEE_TMP"]
         if tmp == '':
             raise KeyError
     except KeyError:
-        for tmp in ['/scratch/', '/tmp/', '/temp/', '/dev/shm']:
+        for tmp in ['/scratch/', '/tmp/', '/dev/shm']:
             if os.path.isdir(tmp):
                 break
 
     tempdir = os.path.join(tmp, 'cadee')
     tempdir = os.path.join(tempdir, str(os.getpid()))
 
-    logger.info("working dir for rank %s: %s", mpi.rank, tempdir)
+    logger.info("Working dir for rank %s: %s", mpi.rank, tempdir)
 
     if mpi.rank == 0:
         start = time.time()
@@ -721,7 +721,7 @@ def priorize(inputs):
     inputs.extend(prio2)
     inputs.extend(prio3)
     inputs.extend(prio9)
-    logger.info('priorized')
+    logger.info('Prioritized')
     #for each in inputs:
     #    print(each)
     return inputs
@@ -779,10 +779,10 @@ def parse_args():
 
         logger.info(
             'Settings: '
-            'path %s, '
-            'alpha %s, '
-            'hij %s, '
-            'force mapping %s .',
+            'Path: %s, '
+            'Alpha: %s, '
+            'Hij: %s, '
+            'Force mapping: %s.',
             simpackdir, alpha, hij, args.force_map)
 
         inputs = []

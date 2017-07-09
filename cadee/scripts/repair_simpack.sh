@@ -9,13 +9,17 @@ function usage(){
 echo "Usage:
     $0 /path/to/tararchive.tar [ --force ]
 
-    1) Unpack tarball
-    2) Check for logfile that without restartfile
-    3) delete logfiles without restartfile
-    4) repack
+    Description:
 
-    --force will continue even if the tar-utility has a non-0 exitcode, and always repack
-"
+    This script will...
+
+    1) Unpack the simpack.
+    2) Check and remove problematic files.
+    3) Repack.
+
+    The --force flag will always repack and also continue tar-utility has a non-0 exitcode.
+  
+    "
     exit 1
 }
 
@@ -24,13 +28,13 @@ set -e
 
 if [ -z $1 ]
 then
-    echo "need a simpack (.tar) to fix (got noting)!"
+    echo "Need a simpack (.tar) to fix (got noting)!"
     usage
 fi
 
 if [ ! -f $1 ]
 then
-    echo "need a simpack (.tar) to fix (got $1)!"
+    echo "Need a simpack (.tar) to fix (got $(file $1))!"
     usage
 fi
 
@@ -63,7 +67,7 @@ then
     found=1
 else
     echo There was an error unpacking.
-    echo use --force as second argument to force unpacking
+    echo Use --force as second argument to force unpacking.
     exit 2
 fi
 fi
@@ -72,7 +76,7 @@ for file in $(ls *.log || true)
 do
     if [ -f "${file}.gz" ]
     then
-        echo "both compressed and uncompressed logfile found. removing uncompressed $file "
+        echo "Both compressed and uncompressed logfile found. Removing uncompressed $file ..."
         /bin/rm $file
         let found+=1
     fi
@@ -82,7 +86,7 @@ for file in $(ls *_dyn*.log.gz ||true) $(ls *_eq.log.gz||true) $(ls *_fep.log.gz
 do
     if [ ! -f "${file%.log.gz}.re" ]
     then
-        echo "logfile exists, but no restartfile. removing outpuffiles of $file ..."
+        echo "Logfile exists, but no restartfile. Removing outputfiles of $file ..."
         rm -v $file
         rm -f -v "${file%.log.gz}.dcd"
         rm -f -v "${file%.log.gz}.en.gz"

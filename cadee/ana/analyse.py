@@ -199,8 +199,8 @@ var info_visible = false;
 data.forEach(function(dp) {
 // used to store actions 
     dp.cadee_actions = {
-        librarymut: [],
-        librarymut_custom: ""
+        libmut: [],
+        libmut_custom: ""
     }
 });
 
@@ -284,19 +284,20 @@ function update_cadee_cmd() {
     var lmuts = [];
     data.forEach(function(dp) {
         if (dp.name == "wt") { return };
+    
         var resid = dp.name.slice(1,-1);
 
-        dp.cadee_actions.librarymut.forEach(function(lm) {
+        dp.cadee_actions.libmut.forEach(function(lm) {
             lmuts.push(resid + ":" + lm); 
         });
 
-        if (dp.cadee_actions.librarymut_custom != "") {
-            lmuts.push(resid + ":'" + dp.cadee_actions.librarymut_custom + "'");
+        if (dp.cadee_actions.libmut_custom != "") {
+            lmuts.push(resid + ":'" + dp.cadee_actions.libmut_custom + "'");
         };
     });
     var cmd_str = "Nothing yet..."
     if (lmuts.length > 0) {
-        cmd_str = "cadee.py --librarymut " + lmuts.join(" ")
+        cmd_str = "cadee.py --libmut " + lmuts.join(" ")
     }
     $("#output-div > p").text(cmd_str);
 };
@@ -336,7 +337,7 @@ $("#sort-name").click( function() {
 
 
 $("#sort-action").click( function() {
-    data.sort( function(a,b) { return (b.cadee_actions.librarymut.length*5 + b.cadee_actions.librarymut_custom.length) - (a.cadee_actions.librarymut.length*5 + a.cadee_actions.librarymut_custom.length) } );
+    data.sort( function(a,b) { return (b.cadee_actions.libmut.length*5 + b.cadee_actions.libmut_custom.length) - (a.cadee_actions.libmut.length*5 + a.cadee_actions.libmut_custom.length) } );
     draw_plot(data);
 });
 
@@ -349,11 +350,11 @@ $("#overlay-div").click(function() {
 $("#CUSTOM_text").on('input propertychange paste', function() {
 //    console.log($(this).prop("value"));
     var sel_data = data[x_hovered];
-    sel_data.cadee_actions.librarymut_custom = $(this).prop("value");
+    sel_data.cadee_actions.libmut_custom = $(this).prop("value");
     update_cadee_cmd();
 });
 
-// on change for the librarymut checkboxes - add the cadee action library mut value on the selected mutant
+// on change for the libmut checkboxes - add the cadee action library mut value on the selected mutant
 $("#info-actions").find(":checkbox").each(function() {
     $(this).change(function(ev) {
         var sel_data = data[x_hovered];
@@ -363,17 +364,17 @@ $("#info-actions").find(":checkbox").each(function() {
             if ($(this).is(":checked")) {
                 ct.prop("disabled", false);
                 ct.focus();  
-                sel_data.cadee_actions.librarymut_custom = ct.prop("value"); 
+                sel_data.cadee_actions.libmut_custom = ct.prop("value"); 
             } else {
                 ct.prop("disabled", true);
-                sel_data.cadee_actions.librarymut_custom = "";   // clear the value
+                sel_data.cadee_actions.libmut_custom = "";   // clear the value
             };
         } else {
-            j = $.inArray($(this).prop("value"), sel_data.cadee_actions.librarymut);
+            j = $.inArray($(this).prop("value"), sel_data.cadee_actions.libmut);
             if (j > -1) {
-                sel_data.cadee_actions.librarymut.splice(j,1);
+                sel_data.cadee_actions.libmut.splice(j,1);
             } else {
-                sel_data.cadee_actions.librarymut.push($(this).prop("value"));
+                sel_data.cadee_actions.libmut.push($(this).prop("value"));
             };
         };
         console.log(sel_data.cadee_actions);
@@ -450,7 +451,7 @@ document.getElementById("graph").on('plotly_hover', function(eventData){
 
 
     actions.find(":checkbox").each(function() {
-        i = $.inArray( $(this).prop("value"), sel_data.cadee_actions.librarymut);
+        i = $.inArray( $(this).prop("value"), sel_data.cadee_actions.libmut);
         if (i > -1) {
             $(this).prop("checked", true)
         } else {
@@ -458,7 +459,7 @@ document.getElementById("graph").on('plotly_hover', function(eventData){
         };
 
         if ($(this).prop("id") == "inp_CUSTOM") {
-            if (sel_data.cadee_actions.librarymut_custom == "") {
+            if (sel_data.cadee_actions.libmut_custom == "") {
                 $("#CUSTOM_text").prop("disabled", true);
             } else {
                 $("#CUSTOM_text").prop("disabled", false);
@@ -466,7 +467,7 @@ document.getElementById("graph").on('plotly_hover', function(eventData){
             };
         };
     });
-    $("#CUSTOM_text").prop("value", sel_data.cadee_actions.librarymut_custom);    
+    $("#CUSTOM_text").prop("value", sel_data.cadee_actions.libmut_custom);    
 
 });
 
@@ -507,11 +508,40 @@ for res in results:
         e.append(exo)
 
 if not b or not e:
-    print("No reference ('wt') found in the database... Aborting...")
-    sys.exit(1)
+    print("No reference ('wt') found in the database, using __absolute__ energetics.")
+    AVG_BARR_WT = 0
+    AVG_EXO_WT = 0
+else:
+    print("Reference ('wt') found in the database, using __relative__ energetics.")
+    AVG_BARR_WT = sum(b)*1.0/len(b)
+    AVG_EXO_WT = sum(e)*1.0/len(e)
 
-AVG_BARR_WT = sum(b)*1.0/len(b)
-AVG_EXO_WT = sum(e)*1.0/len(e)
+# 3-letter or 1-letter codes?
+def check_aa_code(mut):
+    def is_num(char):
+        try:
+            int(char)
+            return True
+        except ValueError:
+            return False
+
+    code=''
+    for char in mut:
+        if is_num(char):
+            pass
+        else:
+            code += char
+
+    if len(code) == 6:
+        return 3
+    elif len(code) == 2:
+        return 1
+    else:
+        print('WARNING BAD AMINO-ACID CODE FOR {}.'.format(mut))
+        return
+    return
+
+aacode_3ltr = False
 
 # get relative energies
 data = {}
@@ -524,6 +554,15 @@ for res in results:
     exo_rel = round(exo - AVG_EXO_WT, 1)
     data[mut_name]["barrier"].append(barr_rel)
     data[mut_name]["exotherm"].append(exo_rel)
+    if aacode_3ltr == False and check_aa_code(mut_name) == 3:
+        aacode_3ltr = True
+    elif aacode_3ltr == True and check_aa_code(mut_name) == 1:
+        aacode_3ltr = None
+    else:
+        pass
+        
+if aacode_3ltr == True:
+    vis = vis.replace("var resid = dp.name.slice(1,-1);", "var resid = dp.name.slice(3,-3);")
 
 dat = """<script> 
 var data = {}
