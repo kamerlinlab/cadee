@@ -214,7 +214,7 @@ class LogFileHandler(logging.StreamHandler):
                     self.logfile.flush()
 
 
-def getLogger(logfile=None, level=logging.DEBUG):
+def getLogger(logfile=None, level=logging.INFO):
     """ Returns a logger, if the MPI module is available, with MPI """
 
     # frmt = '%(asctime)s - %(name)s - %(levelname)s - %s(lineno)s - %(message)s'  # NOPEP8
@@ -558,7 +558,7 @@ class SqlDB(object):
 
     def commit(self):
         self.conn.commit()
-        logger.info('Commited SqlDB')
+        logger.info('Committed SqlDB')
         self.last_commit = time.time()
 
     def add_row(self, results):
