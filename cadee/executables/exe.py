@@ -48,12 +48,6 @@ def which(program, enforce_subdir=False):
     if is_exe(exe_file):
         return exe_file
 
-    # find executable scrwl4:
-    path = os.path.dirname(script_path) + '/scwrl4/'
-    exe_file = os.path.join(path, program)
-    if is_exe(exe_file):
-        return exe_file
-
     if enforce_subdir:
         return None
 

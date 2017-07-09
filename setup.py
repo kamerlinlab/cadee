@@ -62,14 +62,10 @@ if not exe.which('qdyn5', True):
                 print('Fatal: Could not find {0} in $PATH.'.format(qexe))
     		q_missing(qexe)
 
-if not exe.which('Scwrl4', True):
-    # It's not recommended.
-    print('WARNING: Could not find Scwrl4 in cadee/executables/scwrl4/Scwrl4')
-
-
 if not exe.which('babel'):
     print('ERROR: Could not find babel. Please install openbabel and ensure the binaries are in $PATH.')
-    print('       Using Ubuntu try: sudo apt-get install openbabel')
+    print('       Using Ubuntu try:  sudo apt-get install openbabel')
+    print('       for Homebrew try:  brew install open-babel')
     installation_failed()
 
 if not exe.which('Scwrl4'):
