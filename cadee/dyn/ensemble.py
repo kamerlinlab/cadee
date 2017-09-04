@@ -105,7 +105,7 @@ def log_speed(elapsed, fsize, name):
     @type fsize: float
     @type name: str
     """
-    msg = 'Backuptiming for {name}, {elapsed:5.3f}s, MB: {fsize:6.2f}'
+    msg = 'Backup-timing for {name}, {elapsed:5.3f}s, MB: {fsize:6.2f}'
     msg += ' Speed: {speed} MB/s'
 
     msg = msg.format(name=name, elapsed=elapsed,
@@ -179,7 +179,7 @@ class Worker(object):
             self.alive = False
             sys.exit(0)
         else:
-            logger.info('Worker re-init')
+            logger.info('Worker reinitializing.')
             intar, outtar = data
             self.reinit(intar, outtar)
             return True
@@ -494,7 +494,7 @@ class Master(object):
             os.makedirs(self.tmp)
 
     def _shutdown(self):
-        logger.info('Will shutdown! Syncing.')
+        logger.info('Preparing to end this Simulation! Syncing...')
         self.db.close()
         logger.info('Database connection closed.')
         logger.info('Removing Temporary Files...')
@@ -672,7 +672,7 @@ def main(inputs, alpha=None, hij=None, force_map=None, simpackdir=None):
     tempdir = os.path.join(tmp, 'cadee')
     tempdir = os.path.join(tempdir, str(os.getpid()))
 
-    logger.info("Working dir for rank %s: %s", mpi.rank, tempdir)
+    logger.info("Working directory of rank %s: %s", mpi.rank, tempdir)
 
     if mpi.rank == 0:
         start = time.time()

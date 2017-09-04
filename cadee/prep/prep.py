@@ -363,7 +363,8 @@ def main():
         if os.path.exists(outfolder):
             outputfolder_exists('ala_scan', outfolder)
         else:
-            os.makedir(outfolder)
+            os.makedirs(outfolder)
+
 
         alascan.main(wtpdb, wtfep, qpinp, outfolder, radius)
 

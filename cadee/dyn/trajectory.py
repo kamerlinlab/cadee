@@ -575,7 +575,7 @@ class QdynPackage(object):
             self.mapped = False
             self.map_settings = map_settings
 
-        logger.info('qdyn package initilialized')
+        logger.info('New qdyn package initialized.')
 
     def stats(self, obj):
         if obj is None:
