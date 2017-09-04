@@ -235,7 +235,7 @@ def main():
         if args.nummuts is None:
             print('You do a alascan without specifying --radius')
         else:
-            print('Determining Radius needed to accomodate', args.nummuts, 'mutants. Please wait...', end='')
+            print('Determining Radius needed to accommodate', args.nummuts, 'mutants. Please wait...', end='')
             immutable_resids = tools.get_fep_resids(wtpdb, wtfep)
             def search(start, divisor):
                 for i in range(0, 100):
