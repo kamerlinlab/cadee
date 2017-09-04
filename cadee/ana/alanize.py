@@ -478,98 +478,105 @@ document.getElementById("graph").on('plotly_click', function(eventData){
 </script>
 """
 
-if len(sys.argv) != 2:
-    print("Usage: \n  " + os.path.basename(__file__) + " cadee.db")
-    sys.exit(1)
-elif not os.path.lexists(sys.argv[1]):
-    print("File %s does not exist!" % sys.argv[1])
-    sys.exit(1)
+def main(cadee_db):
+
+    if not os.path.lexists(cadee_db):
+        print("File %s does not exist!" % cadee_db)
+        sys.exit(1)
+
+    # connect and get values from DB
+    conn = sqlite3.connect(cadee_db)
+    cursor = conn.cursor()
+    try:
+        cursor.execute("SELECT mutant,barr_forw,exo,barr_back FROM results WHERE feptype='us'")
+    except sqlite3.DatabaseError as e:
+        print("Error when accesing the database: '%s' (%s)" % (cadee_db, e))
+        sys.exit(1)
+
+    results = cursor.fetchall()
+    conn.close()
 
 
-# connect and get values from DB
-conn = sqlite3.connect(sys.argv[1])
-cursor = conn.cursor()
-try:
-    cursor.execute("SELECT mutant,barr_forw,exo,barr_back FROM results WHERE feptype='us'")
-except sqlite3.DatabaseError as e:
-    print("Error when accesing the database: '%s' (%s)" % (sys.argv[1], e))
-    sys.exit(1)
+    # get WT averages
+    b, e = [], []
+    for res in results:
+        mutant, barr, exo, rbarr = res
+        if "wt" in mutant.lower():
+            b.append(barr)
+            e.append(exo)
 
-results = cursor.fetchall()
-conn.close()
+    if not b or not e:
+        print("No reference ('wt') found in the database, using __absolute__ energetics.")
+        AVG_BARR_WT = 0
+        AVG_EXO_WT = 0
+    else:
+        print("Reference ('wt') found in the database, using __relative__ energetics.")
+        AVG_BARR_WT = sum(b)*1.0/len(b)
+        AVG_EXO_WT = sum(e)*1.0/len(e)
 
+    # 3-letter or 1-letter codes?
+    def check_aa_code(mut):
+        def is_num(char):
+            try:
+                int(char)
+                return True
+            except ValueError:
+                return False
 
-# get WT averages
-b, e = [], []
-for res in results:
-    mutant, barr, exo, rbarr = res
-    if "wt" in mutant.lower():
-        b.append(barr)
-        e.append(exo)
+        code=''
+        for char in mut:
+            if is_num(char):
+                pass
+            else:
+                code += char
 
-if not b or not e:
-    print("No reference ('wt') found in the database, using __absolute__ energetics.")
-    AVG_BARR_WT = 0
-    AVG_EXO_WT = 0
-else:
-    print("Reference ('wt') found in the database, using __relative__ energetics.")
-    AVG_BARR_WT = sum(b)*1.0/len(b)
-    AVG_EXO_WT = sum(e)*1.0/len(e)
-
-# 3-letter or 1-letter codes?
-def check_aa_code(mut):
-    def is_num(char):
-        try:
-            int(char)
-            return True
-        except ValueError:
-            return False
-
-    code=''
-    for char in mut:
-        if is_num(char):
-            pass
+        if len(code) == 6:
+            return 3
+        elif len(code) == 2:
+            return 1
         else:
-            code += char
-
-    if len(code) == 6:
-        return 3
-    elif len(code) == 2:
-        return 1
-    else:
-        print('WARNING BAD AMINO-ACID CODE FOR {}.'.format(mut))
+            print('WARNING BAD AMINO-ACID CODE FOR {}.'.format(mut))
+            return
         return
-    return
 
-aacode_3ltr = False
+    aacode_3ltr = False
 
-# get relative energies
-data = {}
-for res in results:
-    mutant, barr, exo, rbarr = res
-    mut_name = mutant.split("_")[0].upper()
-    if mut_name not in data:
-        data[mut_name] = { "name": mut_name, "barrier": [], "exotherm": [] }
-    barr_rel = round(barr - AVG_BARR_WT, 1)
-    exo_rel = round(exo - AVG_EXO_WT, 1)
-    data[mut_name]["barrier"].append(barr_rel)
-    data[mut_name]["exotherm"].append(exo_rel)
-    if aacode_3ltr == False and check_aa_code(mut_name) == 3:
-        aacode_3ltr = True
-    elif aacode_3ltr == True and check_aa_code(mut_name) == 1:
-        aacode_3ltr = None
-    else:
-        pass
-        
-if aacode_3ltr == True:
-    vis = vis.replace("var resid = dp.name.slice(1,-1);", "var resid = dp.name.slice(3,-3);")
+    # get relative energies
+    data = {}
+    for res in results:
+        mutant, barr, exo, rbarr = res
+        mut_name = mutant.split("_")[0].upper()
+        if mut_name not in data:
+            data[mut_name] = { "name": mut_name, "barrier": [], "exotherm": [] }
+        barr_rel = round(barr - AVG_BARR_WT, 1)
+        exo_rel = round(exo - AVG_EXO_WT, 1)
+        data[mut_name]["barrier"].append(barr_rel)
+        data[mut_name]["exotherm"].append(exo_rel)
+        if aacode_3ltr == False and check_aa_code(mut_name) == 3:
+            aacode_3ltr = True
+        elif aacode_3ltr == True and check_aa_code(mut_name) == 1:
+            aacode_3ltr = None
+        else:
+            pass
 
-dat = """<script> 
-var data = {}
-</script>
-""".format(json.dumps(data.values()))
+    if aacode_3ltr == True:
+        vis.replace("var resid = dp.name.slice(1,-1);", "var resid = dp.name.slice(3,-3);")
 
-html += dat + vis + "</body></html>"
+    dat = """<script> 
+    var data = {}
+    </script>
+    """.format(json.dumps(data.values()))
 
-open("index.html", 'w').write(html)
-print('Success... Wrote index.html... ')
+    outhtml = html + dat + vis + "</body></html>"
+
+    open("index.html", 'w').write(outhtml)
+    print('Success... Wrote index.html... ')
+
+
+if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        print("Usage: \n  " + sys.argv[0] + " cadee.db")
+        sys.exit(1)
+
+    main(sys.argv[1])
+

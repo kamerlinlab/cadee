@@ -204,22 +204,23 @@ def check_input(qprep5_inp, qprep5_lib, outfile=False):
         qprep5_inp = os.path.abspath(outfile)
     else:
         if needs_mod:
-            print(NLC + 'ERROR')
-            print()
-            print()
-            print('Qprep5 - Inputfile* must be rewritten like this:')
-            print('                  *', qprep5_inp)
-            print()
-            print(output)
-            print()
-            import sys
-            sys.exit(1)
+            logger.warn(NLC + 'ERROR')
+            logger.info('Qprep5 - Inputfile* must be rewritten like this:')
+            logger.info('                  *' + qprep5_inp)
+            logger.info(output)
+            raise QprepInpError
+            
     qprep5 = {}
     qprep5['input'] = qprep5_inp
     qprep5['inpdb'] = qprep5_in_pdb
     qprep5['outpdb'] = qprep5_out_pdb
     qprep5['outtop'] = qprep5_out_top
     return qprep5
+
+
+class QprepInpError(Exception):
+    """ QprepInpError; an Error that requires QprepInp-file to be re-written """
+    pass
 
 
 def run_qprep5(qprep5inp, log, qprep5_exe=None):

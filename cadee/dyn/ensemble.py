@@ -53,7 +53,7 @@ if mpi.rank == mpi.root:
     print('Rank 0: Started @', time.time(), mpi.get_info())
 
 # This class is running a simulation
-# Its essentially my python-implementation of submit.sh
+
 
 # RELEVANT FOR PYTHON - MPI Interaction:
 # http://stackoverflow.com/questions/10590064/interact-with-a-mpi-binary-via-a-non-mpi-python-script
@@ -464,7 +464,7 @@ class Master(object):
     Distributes Inputfiles to Worker Nodes.
     Receives MPI messages with tags defined in mpi.Tags.Class
     """
-    def __init__(self, tempdir, start, force_map=False):
+    def __init__(self, tempdir, start, simpackdir, force_map=False):
         self.comm = mpi.comm
         self.tmp = tempdir + str(0) + str("/")
         self.inputlist = []
@@ -472,8 +472,9 @@ class Master(object):
         self.io_tickets = [None]*mpi.size
         self.io_queue = []
         self.start = start
+        self.simpackdir = simpackdir
 
-        dbname = os.path.join(os.getcwd(), 'cadee.db')
+        dbname = os.path.join(simpackdir, 'cadee.db')
 
         if os.path.exists(dbname) and force_map:
             logger.warning('Database and would be overwritten: %s', dbname)
@@ -485,7 +486,7 @@ class Master(object):
 
 
         self.db = tools.SqlDB(
-            os.path.join(os.getcwd(), 'cadee.db')
+            os.path.join(simpackdir, 'cadee.db')
             )
 
         # TODO make sure output file does not exist!
@@ -495,8 +496,11 @@ class Master(object):
     def _shutdown(self):
         logger.info('Will shutdown! Syncing.')
         self.db.close()
-        logger.debug('Database connection closed.')
-        logger.info("Master exiting.")
+        logger.info('Database connection closed.')
+        logger.info('Removing Temporary Files...')
+        import shutil
+        shutil.rmtree(self.tmp)
+        logger.info("DONE. Exiting")
         sys.exit()
 
     # TODO: Does not work for slaves
@@ -508,7 +512,7 @@ class Master(object):
         logger.warning('Press CTRL+C to KILL')
 
         if len(self.inputlist) > 0:
-            logger.warning('Remaining inputs: %s, Items: %s',
+            logger.warning('Following Simpacks have been removed unfinished from the Queue: %s, Items: %s',
                            len(self.inputlist), str(self.inputlist))
             self.inputlist = []
 
@@ -517,7 +521,10 @@ class Master(object):
         stop = time.time() + 170
         while time.time() < stop:
             self._iter()
-        logger.warning('... Timeout! Initiate FORCED shutdown...')
+        logger.warning('... Timeout!')
+        if mpi.mpi:
+            logger.warning('MPI_ABORT')
+            MPI.MPI_Abort(self.comm, int(signum))
         self._shutdown()
 
     def _iter(self):
@@ -651,7 +658,7 @@ class Master(object):
         return 0
 
 
-def main(inputs, alpha=None, hij=None, force_map=None):
+def main(inputs, alpha=None, hij=None, force_map=None, simpackdir=None):
     """ Ensemble Start, Divides Work on Ranks """
     try:
         tmp = os.environ["CADEE_TMP"]
@@ -669,7 +676,9 @@ def main(inputs, alpha=None, hij=None, force_map=None):
 
     if mpi.rank == 0:
         start = time.time()
-        io_rank = Master(tempdir, start, force_map=force_map)
+        if simpackdir is None:
+            raise Exception('Simpackdir is not defined on rank0.')
+        io_rank = Master(tempdir, start, simpackdir, force_map=force_map)
         for each in inputs:
             # TODO: remove each, each
             io_rank.inputlist.append([each, each])
@@ -729,9 +738,8 @@ def priorize(inputs):
 
 def parse_args():
     # TODO: load defaults from somewhere
-    parser = argparse.ArgumentParser('CADEE: Simpack computation.')
+    parser = argparse.ArgumentParser('CADEE: simpack computation.')
 
-    # TODO: DocOpt could simplty my life
     # Minimum Inputfiles needed
     parser.add_argument('simpackdir', action='store',
                         help='Path to folder with simpacks.')
@@ -748,6 +756,8 @@ def parse_args():
     args = parser.parse_args()
 
     simpackdir = args.simpackdir
+    simpackdir = os.path.abspath(simpackdir)
+
     if not os.path.isdir(simpackdir):
         raise argparse.ArgumentTypeError('Not a folder:{0}'.format(simpackdir))
 
@@ -761,7 +771,7 @@ def parse_args():
 
     if args.hij is None and args.force_map is True:
         raise argparse.ArgumentTypeError(
-                '--force_map is invalid, you must also set --hij and --alpha')
+                '--force_map alone is invalid, you must also set --hij and --alpha')
 
     alpha = None
     hij = None
@@ -798,7 +808,7 @@ def parse_args():
 
             inputs = priorize(inputs)
 
-        main(inputs, alpha, hij, args.force_map)
+        main(inputs, alpha, hij, args.force_map, simpackdir=simpackdir)
     else:
         main(None, alpha, hij, args.force_map)
 

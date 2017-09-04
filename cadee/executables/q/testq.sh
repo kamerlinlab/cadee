@@ -1,3 +1,8 @@
+#!/bin/bash
+
+# This script is very quickly testing, if the executables seem to work.
+# It will find out, when the tools have wrong names, for example.
+
 echo "" | ./qcalc5 2>&1 | grep -q 'qcalc'
 if [ $? -ne 0 ]
 then

@@ -1,0 +1,47 @@
+{DH2}
+
+# Date: Fri Mar 11 13:43:50 2016
+
+
+[atoms]
+    1  P1    P               1.3336
+    2  O2    O2Z            -0.9265
+    3  O3    O2Z            -0.9265
+    4  O4    O2Z            -0.9265
+    5  O5    OP             -0.5731
+    6  C6    CT              0.2501
+    7  H7    HC             -0.0386
+    8  H8    HC             -0.0386
+    9  C9    C2              0.5084
+   10  O10   O              -0.5961
+   11  C11   CT              0.3072
+   12  H12   HC             -0.0187
+   13  H13   HC             -0.0187
+   14  O14   OH             -0.7439
+   15  H15   HO              0.4079
+
+
+[bonds]
+P1    O2   
+P1    O3   
+P1    O4   
+P1    O5   
+O5    C6   
+C6    H7   
+C6    H8   
+C6    C9   
+C9    O10  
+C9    C11  
+C11   H12  
+C11   H13  
+C11   O14  
+O14   H15  
+
+
+[impropers]
+O10   C9    C6    C11
+
+ 
+[charge_groups]
+C6 P1 O2 O3 O4 O5 H7 H8 C9 O10 C11 H12 H13 O14 H15
+

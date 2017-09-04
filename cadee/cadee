@@ -16,6 +16,14 @@ __email__ = "beat.amrein@gmail.com"
 
 import sys
 import os
+import cadee.dyn.mpi as mpi
+if mpi.mpi:
+    if mpi.rank == 0:
+        rank0 = True
+    else:
+        rank0 = False
+else:
+    rank0=True
 
 # checking if qscripts is configured, or configure it now:
 qscripts = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'qscripts')
@@ -24,12 +32,18 @@ if not os.path.isfile(os.path.join(qscripts,'qscripts.cfg')):
 
 
 def usage():
-    print()
-    print()
-    print('Usage:')
-    print()
-    print('      cadee [ prep(p) | dyn(d) | analyse(a) | tool(t) ]')
-    #print('      cadee [ dyn(d) | dynp(dp) | prep(p) | analyse(a) | tool(t) ]')
+    if rank0:
+        print()
+        print()
+        print('Usage:')
+        print('       Single Core Tasks:')
+        print('                   cadee [ prep(p) | ana(a) | tool(t) ]')
+        print()
+        print('       Multi Core Tasks:')
+        print('                    mpirun -n X cadee dyn')
+        print('                   mpiexec -n X cadee dyn')
+        print('                   X == Number of cores to use; 2+.')
+        #print('      cadee [ dyn(d) | dynp(dp) | prep(p) | analyse(a) | tool(t) ]')
     sys.exit(1)
 
 if len(sys.argv) < 2:
@@ -39,20 +53,89 @@ cmd = sys.argv[1].lower()
 sys.argv.remove(cmd)
 
 if cmd == 'dyn' or cmd == 'd':
+    import cadee.dyn.mpi as mpi
+    if mpi.size < 2:
+        print()
+        print()
+        print('Error: X must be greater or equal 2')
+        usage()
+
     import cadee.dyn.ensemble as ens
     ens.parse_args()
 
 elif cmd == 'dynp' or cmd == 'dp':
-    print('dynp not activated. use dyn instead.')
+    print('This can not be easily automated.'
+    print('The pcadee scripts assume a SLURM environment.')
+    print('')
+    print('Also, the scripts need adjustments to suit your machine.')
+    print('')
+    print('You find the ')
     usage()
 
 elif cmd == 'prep' or cmd == 'p':
     import cadee.prep.prep as prep
     prep.main()
 
-elif cmd == 'analyse' or cmd == 'analyze' or cmd == 'a':
-    import analyse
-    analyse.analyse(sys.argv)
+elif cmd == 'ana' or cmd == 'analyse' or cmd == 'analyze' or cmd == 'a':
+
+    if len(sys.argv) < 2:
+        usage()
+
+
+    def ana_usage():
+        if rank0:
+            print()
+            print()
+            print('Analysis Options:')
+            print('                   cadee ana [ cat | alanize | csv | csv_exo ]')
+            print()
+            print('       cat:')
+            print('           Description: Utility to conCATenate two or more cadee.db files.')
+            print('           Example:     cadee ana cat cadee1.db cadee2.db ')
+            print('                        (Will create "concat_cadee.db")')
+            print('')
+            print('       alanize:         ____             ___')
+            print('           Description: ALANine scan analIZEer: Visual alanine scan analysis.')
+            print('           Example:     cadee ana alanize')
+            print('                        (Will create "index.html" file. Open with a browser.)')
+            print('')
+            print('       csv:')
+            print('           Description: Export activation barrier to a csv file.')
+            print('           Example:     cadee ana csv cadee.db dGstar.csv')
+            print('                        (Will create "dGstar.csv" file)')
+            print('')
+            print('       csv_exo:')
+            print('           Description: Export gibbs free energy a csv file.')
+            print('           Example:     cadee ana csv cadee.db ddG.csv')
+            print('                        (Will create "ddG.csv" file)')
+            print('')
+
+            # print('      cadee [ dyn(d) | dynp(dp) | prep(p) | analyse(a) | tool(t) ]')
+        sys.exit(1)
+
+    subcmd = sys.argv[1].lower()
+    sys.argv.remove(subcmd)
+    sys.argv.remove(sys.argv[0])
+
+    import os
+
+
+    if subcmd == 'cat':
+        import cadee.ana.cat_cadee_dbs as cat
+        cat.main(sys.argv[1:])
+    elif subcmd == 'csv_exo':
+        import cadee.ana.export_to_csv as csv
+        csv.main(sys.argv[1:], 'exo')
+    elif subcmd == 'csv':
+        import cadee.ana.export_to_csv as csv
+        csv.main(sys.argv[1:])
+    elif subcmd == 'alanize':
+        import cadee.ana.alanize as alanyze
+        alanyze.main(sys.argv[1])
+    else:
+        ana_usage()
+    
+
 
 elif cmd == 'tool' or cmd == 't':
     def tool_usage(badtool=False):

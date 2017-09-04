@@ -7,6 +7,9 @@ import sys
 from glob import glob
 import cadee.executables.exe as exe
 
+print('Welcome to CADEE Pre-Setup Check.')
+print()
+
 QEXES=['qdyn5', 'qprep5', 'qcalc5', 'qfep5']
 qexedir=os.path.join(os.path.dirname(os.path.abspath(__file__)), 'cadee/executables/q/')
 
@@ -24,8 +27,10 @@ def q_missing(exe):
     Print message about the missing Q5-executable and call installation_failed.
     """
     print()
-    print('ERROR: Could not find {0}. Please install Q5 and ensure the binaries are in $PATH.'.format(exe))
-    print('       or copy the binaries to {0}.'.format(qexedir))
+    print('ERROR: Could not find {0}. Please install Q5.')
+    print('       Copy the binaries to {0}.'.format(qexedir))
+    print('       -OR-')
+    print('       ensure the binaries are in $PATH.'.format(exe))
     print()
     print('       Q5 can be obtained from {0}.'.format('http://www.icm.uu.se/cbbi/aqvist-lab/q'))
     installation_failed()
@@ -48,7 +53,14 @@ if not exe.which('qdyn5', True):
                 print('         Found {0} in {1}.'.format(qexe, exe.which(qexe)))
                 print()
                 print('         Will now copy {0} to {1}.'.format(qexe, qexedir))
-                ans = raw_input('           Proceed (y/N)?').lower()
+
+                # compatibility of python3 and python2
+                try:
+                    input = raw_input
+                except NameError:
+                    pass
+                ans = input('           Proceed (y/N)?').lower()
+
                 if ans == 'y':
                     print('         Proceed.')
                     import shutil
@@ -60,7 +72,7 @@ if not exe.which('qdyn5', True):
                     q_missing(qexe)
             else:
                 print('Fatal: Could not find {0} in $PATH.'.format(qexe))
-    		q_missing(qexe)
+            q_missing(qexe)
 
 if not exe.which('babel'):
     print('ERROR: Could not find babel. Please install openbabel and ensure the binaries are in $PATH.')
@@ -76,7 +88,7 @@ if not exe.which('Scwrl4'):
 
 
 setup(name='cadee',
-      version='0.8.0',
+      version='0.8.1',
       description='Computer Aided Directed Evolution of Enzymes',
       url='http://github.com/kamerlinlab/cadee',
       author='Beat Anton Amrein',
@@ -87,6 +99,7 @@ setup(name='cadee',
       package_data={'cadee': ['lib/*', 'qscripts/lib/*', 'qscripts/REAMDE.md', 'qscripts/LICENSE.txt', 'executables/q/q*', 'executables/scwrl4/*', 'bash_scripts/*']},
       install_requires=[
           ['mpi4py==1.3.1'],
+          ['numpy'],
       ],
       scripts={
             'cadee/cadee',

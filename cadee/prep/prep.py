@@ -46,6 +46,9 @@ START = time.time()
 if not tools.check_version():
     time.sleep(5)
 
+# compatibility of raw_input/input for python2/3
+try: input = raw_input
+except NameError: pass
 
 class cd:
     """Context manager for changing the current working directory
@@ -126,9 +129,6 @@ def pack_tarballs(parentdir, seeds=1):
         os.removedirs(mutant)
 
 
-
-
-
 def check_int_or_float(value):
     """Check if a value is castable to float or rise ArgumentTypeError"""
     try:
@@ -146,6 +146,19 @@ def check_int_oneplus(value):
             raise argparse.ArgumentTypeError("%s is not >=1" % value)
     except:
         raise argparse.ArgumentTypeError("%s is not integer" % value)
+
+
+def outputfolder_exists(shortdir, fulldir):
+    # type: (str, str) -> None
+    logger.warning('The {0} folder exists! Full path:'.format(shortdir))
+    logger.warning(fulldir)
+    logger.warning('Warning: Do NOT continue, if a simulation is running (i.e. cadee dyn runs in this folder). Else, your simulation may get corrupted.')
+    ans = input('\n\n          Do you want to continue (y/N)?').lower()
+    ans = ans.lower()
+    if ans != 'y':
+        logger.fatal('Fatal: {0} folder exists: Please (re)move {1}.'.format(shortdir, outfolder))
+        import sys
+        sys.exit(1)
 
 
 def main():
@@ -199,7 +212,7 @@ def main():
     parser.add_argument('--traj12ns', action='store', default=True,
                         help='Create standard 12ns inputs, with sequence restraints on fep atoms.')
     parser.add_argument('--trajcsv', action='store', default=False,
-                        help='EXPERTS ONLY: a traj-csv file to use for inputfile generator')
+                        help='A traj-csv file to use for inputfile generator. Experimental.')
     parser.add_argument('--numseeds', action='store', default=4,
                         type=check_int_oneplus, help='number of seeds')
 
@@ -217,10 +230,6 @@ def main():
     if not has_ext(qpinp, '.qpinp'):
         raise argparse.ArgumentTypeError('File must have name ".qpinp" extension: {0}'.format(qpinp))
     qplib = os.path.abspath(args.qplib)
-
-    if not args.alascan and not args.libmut:
-        logger.info('Please specify either --alascan or --libmut to generate inputfiles.')
-        logger.info('If you already did so, you can repack your inputfiles:')
 
     if args.alascan and args.radius is None:
         if args.nummuts is None:
@@ -260,9 +269,33 @@ def main():
 
     odir = os.getcwd()
 
-    try:
-        os.chdir(tempdir)
-        qprep5.check_input(qpinp, qplib)
+    with cd(tempdir):
+        try:
+            qprep5.check_input(qpinp, qplib)
+        except qprep5.QprepInpError:
+            logger.info('Will attempt to fix qprep5-input file: ')
+            qpinp_parts = qpinp.split('.')
+            qpinp_parts.insert(-1, 'new')
+            qpinp_new = '.'.join(qpinp_parts)
+            logger.info(' The new qprep5 input file will be named {0}.'.format(qpinp_new))
+            if os.path.exists(qpinp_new):
+                logger.critical('Cannot write new qpinp file {0}, exist! Remove it!'.format(qpinp_new))
+                logger.fatal('User interaction required.')
+                import sys
+                sys.exit(1)
+
+            qprep5.check_input(qpinp, qplib, qpinp_new)
+            try:
+                qprep5.check_input(qpinp_new, qplib)
+            except qprep5.QprepInpError:
+                logger.critical(' The newly written qpinp file {0} is invalid!'.format(qpinp_new))
+                logger.fatal('User interaction required.')
+                import sys
+                sys.exit(1)
+
+            logger.warn('Adjusted the user-provided qprep5-input file {0}, using new version {1} instead.'.format(qpinp, qpinp_new))
+            qpinp=qpinp_new
+
         qprep5.create_top(qpinp, tempdir, wtpdb=wtpdb)
         out_pdb, out_top, out_fep = qprep5.create_top_and_fep(qpinp,
                                                               tempdir,
@@ -319,18 +352,23 @@ def main():
         # TODO: catch all kind of errors and handle them here, tell the user
 
         shutil.rmtree(tempdir)
-    finally:
-        os.chdir(odir)
     
     outfolder = None
 
     if args.alascan:
-        print('alascan')
+        logger.info('Preparing alascan.')
         radius = args.radius
         outfolder = os.getcwd() + '/' + 'ala_scan'
+
+        if os.path.exists(outfolder):
+            outputfolder_exists('ala_scan', outfolder)
+        else:
+            os.makedir(outfolder)
+
         alascan.main(wtpdb, wtfep, qpinp, outfolder, radius)
 
     elif args.libmut is not None and len(args.libmut) > 0:
+        logger.info('Preparing libmut.')
         mutants = []
 
         immutable = tools.get_fep_resids(wtpdb, wtfep)
@@ -357,10 +395,11 @@ def main():
             sequences = genseqs.genseq2(fasta, mutants)
 
             outfolder = os.getcwd()+'/libmut'
-            try:
+
+            if os.path.exists(outfolder):
+                outputfolder_exists('libmut', outfolder)
+            else:
                 os.mkdir(outfolder)
-            except OSError:
-                pass
 
             def get_scwrl_seq(wt, new):
                 name = ''
@@ -412,14 +451,26 @@ def main():
                 with cd(dirname):
                     scwrl.scwrl2(os.path.basename(wtpdb), seq,
                                  os.path.basename(wtfep), os.path.basename(qpinp))
+    else:
+        logger.info('No parameters provided. Will prepare simpacks from input; "wt".')
+        outfolder = os.getcwd() + '/wt'
 
+        if os.path.exists(outfolder):
+            logger.fatal('Cannot continue: Folder {0} exists. Please (re)move it.'.format(outfolder))
+            import sys
+            sys.exit(1)
+        else:
+            os.makedirs(outfolder+'/wt')
+            with cd(outfolder+'/wt'):
+                shutil.copy(wtfep, 'mutant.fep')
+                qprep5.create_top_and_fep(qpinp, str(os.getcwd()), in_pdb=wtpdb, out_pdb='mutant.pdb')
 
     if args.trajcsv:
         if outfolder is None:
             print('You provided a trajcsv, but it is not clear which outputfolder to use.')
             print('Please enter the folder here:')
             print('(If you dont the program will terminate.)')
-            outfolder = raw_input('Folder:').rstrip()
+            outfolder = input('Folder:').rstrip()
             if outfolder.strip() == '':
                 outfolder = None
                 import sys
@@ -439,7 +490,7 @@ def main():
             print('You want to create inputs, I dont know where they are')
             print('Please enter the folder here:')
             print('(If you dont the program will terminate.)')
-            outfolder = raw_input('Folder:').rstrip()
+            outfolder = input('Folder:').rstrip()
             if outfolder.strip() == '':
                 outfolder = None
                 import sys
@@ -450,7 +501,7 @@ def main():
 
         if os.path.isdir(outfolder):
             os.chdir(outfolder)
-            import mutate.create_inputs_12ns as inputgen
+            import cadee.prep.create_inputs_12ns as inputgen
             inputgen.walk(outfolder)
             pack_tarballs(outfolder, seeds=args.numseeds)
             print('Success! You find your simpacks in', outfolder)
