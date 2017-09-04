@@ -71,7 +71,7 @@ for qexe in QEXES:
                 q_missing(qexe)
         else:
             print('Fatal: Could not find {0} in $PATH.'.format(qexe))
-        q_missing(qexe)
+            q_missing(qexe)
 
 if not exe.which('babel'):
     print('ERROR: Could not find babel. Please install openbabel and ensure the binaries are in $PATH.')
