@@ -497,7 +497,11 @@ def main():
         if os.path.isdir(outfolder):
             os.chdir(outfolder)
             import cadee.prep.create_template_based_simpack as inputgen
-            inputgen.main(outfolder, args.template.name)
+            if args.template is not None:
+                template = args.template.name
+            else:
+                template = None
+            inputgen.main(outfolder, template)
             pack_tarballs(outfolder, seeds=args.numseeds)
             print('Success! You find your simpacks in', outfolder)
 

@@ -84,7 +84,7 @@ case "$MACHINE_NAME" in
 
 "beat-ThinkPad-X1-Carbon-3rd")
     # UNTESTE!
-    export EXE="mpiexec -n 4 qdyn5p"
+    export EXE="mpiexec -n $CORES qdyn5p"
     ;;
 
 
