@@ -95,7 +95,7 @@ setup(name='cadee',
       license='GPLv2',
       packages=['cadee', 'cadee.ana', 'cadee.dyn', 'cadee.prep', 'cadee.executables', 'cadee.qscripts' ],
       py_modules=['cadee'],
-      package_data={'cadee': ['lib/*', 'qscripts/lib/*', 'qscripts/REAMDE.md', 'qscripts/LICENSE.txt', 'executables/q/q*', 'executables/scwrl4/*', 'bash_scripts/*']},
+      package_data={'cadee': ['lib/*', 'qscripts/lib/*', 'qscripts/REAMDE.md', 'qscripts/LICENSE.txt', 'executables/q/q*', 'executables/scwrl4/*', 'scripts/*']},
       install_requires=[
           ['mpi4py==1.3.1'],
           ['numpy'],
