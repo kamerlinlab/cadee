@@ -209,10 +209,10 @@ def main():
                         help='dont run the wildtype alanine')
 
     # Input Generator Options
-    parser.add_argument('--traj12ns', action='store', default=True,
-                        help='Create standard 12ns inputs, with sequence restraints on fep atoms.')
+    parser.add_argument('--template', action='store', default=None, type=argparse.FileType('r'),
+                        help='Create simpacks based on the provided template.')
     parser.add_argument('--trajcsv', action='store', default=False,
-                        help='A traj-csv file to use for inputfile generator. Experimental.')
+                        help='A traj-csv file to use for inputfile generation. Experimental.')
     parser.add_argument('--numseeds', action='store', default=4,
                         type=check_int_oneplus, help='number of seeds')
 
@@ -259,11 +259,6 @@ def main():
 
     if args.trajcsv:
         args.trajcsv = os.path.abspath(args.trajcsv)
-
-    if args.numseeds > 1 and not (args.trajcsv or args.traj12ns):
-        raise argparse.ArgumentTypeError("Can not seed without generating" +
-                                         "trajectories. Use eg --traj12ns.")
-
 
     tempdir = tempfile.mkdtemp()
 
@@ -485,12 +480,11 @@ def main():
             inputgen.walk('mutant.pdb', args.trajcsv, outfolder)
             pack_tarballs(outfolder, seeds=args.numseeds)
             print('Success! You find your simpacks in', outfolder)
-
-    elif args.traj12ns:
+    else:
         if outfolder is None:
-            print('You want to create inputs, I dont know where they are')
-            print('Please enter the folder here:')
-            print('(If you dont the program will terminate.)')
+            print('If you want to create inputs, I dont know where they are!')
+            print('Please enter the folder:')
+            print('(Else the program will terminate.)')
             outfolder = input('Folder:').rstrip()
             if outfolder.strip() == '':
                 outfolder = None
@@ -502,8 +496,8 @@ def main():
 
         if os.path.isdir(outfolder):
             os.chdir(outfolder)
-            import cadee.prep.create_inputs_12ns as inputgen
-            inputgen.walk(outfolder)
+            import cadee.prep.create_template_based_simpack as inputgen
+            inputgen.main(outfolder, args.template.name)
             pack_tarballs(outfolder, seeds=args.numseeds)
             print('Success! You find your simpacks in', outfolder)
 
