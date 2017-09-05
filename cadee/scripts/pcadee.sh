@@ -40,72 +40,71 @@
 # USER SETTINGS #
 #################
 
-export CORES=4
-
 # If you are not running SLURM, you may adjust following lines yourself:
 # SLURM_NTASKS      # number of cores to use
 # SLURM_NNODES      # number of nodes to use (only 1 supported)
 
-export MACHINE_NAME=$SNIC_RESOURCE
-export SCRATCH_FOLDER=$SNIC_TMP
-export BACKUPINTERVAL=1740 # DEFAULT: 1740, 29 minutes
+SLURM_NTASKS=2      # number of cores to use
+SLURM_NNODES=1      # number of nodes to use (only 1 supported)
+
+export CORES=4
+export MACHINE_NAME="$(hostname)"
+export SCRATCH_FOLDER=/tmp
+export BACKUPINTERVAL=540 # DEFAULT: 540, 9 minutes
 
 
 # folder where srunq.sh is located:
-DIR="/proj/snic2016-34-27/software/bin/"
+DIR="/home/bm/Downloads/cadee/cadee/scripts/"
 
 #########################
 # CLUSTER CUSTOMIZATION #
 #########################
 
-write "This is $MACHINE_NAME. Loading Modules:"
+echo "This is $MACHINE_NAME. Loading Modules:"
 case "$MACHINE_NAME" in
 "rackham")
-    #module -v load intel/16.1  intelmpi/17.1
-    #module load intel/16.1 openmpi/1.10.1
-    #export QPATH="/home/beat/bin/qrackham/bin"
     ml intel/17.1 intelmpi/17.1 python/2.7.11
     export QPATH="/home/fabst747/qsource/bin"
     export EXE="mpiexec -n $CORES -bind-to none $QPATH/qdyn5p"
     ;;
 
+
 "abisko")
     if [ $CORES -ne 6 ]
     then
-        write "WARNING: You run a computation with \$CORES=$CORES on abisko."
-        write "This is discouraged. You should run it with 6 CORES."
+        echo "WARNING: You run a computation with \$CORES=$CORES on abisko."
+        echo "This is discouraged. You should run it with 6 CORES."
+        exit
     fi
     module -v load pgi/14.3-0
     module -v load openmpi/pgi/1.8.1
-    export QPATH=
-    write "Adjusted Q PATH! Executables:"
-    ls $QPATH
-    export EXE="srun -n $CORES $QPATH/qdyn5p"
+    export EXE="srun -n $CORES qdyn5p"
     ;;
 
-"kebenekaise")
-    # UNTESTED!
-    module -v load pgi/14.3-0
-    module -v load openmpi/pgi/1.8.1
-    export QPATH=/pfs/nobackup/home/a/amrein/abiskobin/qsource/bin
-    write "Adjusted Q PATH! Executables:"
-    ls $QPATH
-    export EXE="srun -n $CORES $QPATH/qdyn5p"
+
+"bm-VirtualBox")
+    # UNTESTE!
+    export EXE="mpirun.mpich -n 2 qdyn5p"
     ;;
+
 
 "")
-    write "This job is not running in SNIC environment."
+    echo "This job is not running in SNIC environment."
     ;;
 
+
 *)
-    write "THIS CLUSTER IS UNKNOWN!"
-    write "I will not add modules"
+    echo "THIS CLUSTER IS UNKNOWN!"
+    echo "I will not add modules"
+    ;;
+
+
 esac
 
-write "Adjusted Q PATH! Executables:"
+echo "Adjusted Q PATH! Executables:"
 echo $(/bin/ls $QPATH)
 
-if [ -z $EXE ]
+if [ -z "$EXE" ]
 then
     echo "FATAL:"
     echo "      You must configure the pcadee script properly."
