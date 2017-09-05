@@ -28,7 +28,7 @@ NLC = '\n'
 
 def run_scwrl(out_pdb, out_log, in_pdb, in_seq):
     """Run SCWRL4. Use 'Scwrl4' - executable from $PATH"""
-    import cadee.executables as exe
+    import cadee.executables.exe as exe
 
     scwrl_exe = exe.which('Scwrl4')
     if scwrl_exe is None:
@@ -132,7 +132,7 @@ def babel_pdb_for_scwrl(wtpdb, proper_pdb='proper.pdb',
     temp_pdb = '"' + temp_pdb + '"'
 
     import config
-    import cadee.executables as exe
+    import cadee.executables.exe as exe
 
     # locate babel-exe
     babel_exe = exe.which('babel')

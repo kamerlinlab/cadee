@@ -17,7 +17,7 @@ import sys
 __author__ = "Beat Amrein"
 __email__ = "beat.amrein@gmail.com"
 
-logger = logging.getLogger('mutate.clash')
+logger = logging.getLogger('cadee.prep.clash')
 
 BACKBONE = ['H', 'N', 'O', 'C', 'CA']
 IGNORE_BB = True
@@ -75,7 +75,7 @@ def get_resnum_coords(resnum, pdblines):
            pdblines: list of ATOM entries
     return: list of [x,y,z] coordinate
     """
-    import mutate.tools as tools
+    import cadee.prep.tools as tools
     coords_a = []
     anames_a = []
     for line in pdblines:
@@ -106,7 +106,7 @@ def clashes_of_resnum(pdblines, resnum, logfile=None):
 
     @return: score, residues
     """
-    import mutate.tools as tools
+    import cadee.prep.tools as tools
 
     coords_a, anames_a = get_resnum_coords(resnum, pdblines)
     clashing_resids = []
@@ -131,7 +131,7 @@ def main(pdbfile, resnums):
     @param pdbfile: path to pdbfile
     @param resnums: int or list of ints
     """
-    import mutate.tools as tools
+    import cadee.prep.tools as tools
     print(clashscore_and_residues(resnums, tools.read_pdbatoms(pdbfile)))
 
 if __name__ == "__main__":
