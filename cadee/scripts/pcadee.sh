@@ -44,7 +44,7 @@
 # SLURM_NTASKS      # number of cores to use
 # SLURM_NNODES      # number of nodes to use (only 1 supported)
 
-SLURM_NTASKS=2      # number of cores to use
+SLURM_NTASKS=4      # number of cores to use
 SLURM_NNODES=1      # number of nodes to use (only 1 supported)
 
 export CORES=4
@@ -54,7 +54,7 @@ export BACKUPINTERVAL=540 # DEFAULT: 540, 9 minutes
 
 
 # folder where srunq.sh is located:
-DIR="/home/bm/Downloads/cadee/cadee/scripts/"
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 #########################
 # CLUSTER CUSTOMIZATION #
@@ -82,9 +82,9 @@ case "$MACHINE_NAME" in
     ;;
 
 
-"bm-VirtualBox")
+"beat-ThinkPad-X1-Carbon-3rd")
     # UNTESTE!
-    export EXE="mpirun.mpich -n 2 qdyn5p"
+    export EXE="mpiexec -n 4 qdyn5p"
     ;;
 
 
@@ -161,12 +161,12 @@ echo "This will use $(($CORES*$MAXTASK)) cores from $SLURM_NTASKS"
 
 echo ""
 echo ""
-echo " Will Distribute Jobs and start work in 3s "
+echo " Will Distribute Jobs and start work in 1s: "
 
-sleep 3
+sleep 1
 
 
-find $SIMPACK_FOLDER -name "*.tar" | xargs -i --max-procs=$MAXTASK bash -c "echo start {}; $DIR/srunq.sh {}; echo end {}"
+find $SIMPACK_FOLDER -name "*.tar" | xargs -i --max-procs=$MAXTASK bash -c "echo Start {}; $DIR/srunq.sh {}; echo End {}; exit"
 
 echo ""
 echo ""

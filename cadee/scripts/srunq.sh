@@ -55,6 +55,7 @@ else
     mkdir -p "$TEMPDIR"
     function cleanup {
         /bin/rm -rf "$TEMPDIR"
+	echo "Cleanup Done."
     }
     trap cleanup EXIT
 fi
@@ -187,16 +188,19 @@ function isnan {
 # Print Config #
 ################
 
-module list
 write ""
 write ""
 write "###########"
 write "# CONFIG: #"
 write "###########"
+write " bkp int: $BACKUPINTERVAL"
 write " simpack: $SIMPACK"
 write " cores:   $CORES"
 write " exe:     $EXE"
 write " workdir: $PWD"
+write ""
+write ""
+write ""
 
 
 #############
@@ -204,6 +208,8 @@ write " workdir: $PWD"
 #############
 
 ERROR=0
+
+touch timestamp
 
 for inp in *.inp
 do
@@ -303,4 +309,3 @@ write "End: $(date)"
 write "Duration: $SECONDS s"
 
 exit $ERROR
-
