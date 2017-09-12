@@ -23,11 +23,11 @@ __email__ = "beat.amrein@gmail.com"
 logger = logging.getLogger('create_inputs')
 
 
-#TODO: Make fep/warmup settings user adjustable
+#TODO: Make fep/temperization settings user adjustable
 # fep settings
 fep = "0.5 1 0"   # (seq restraints)
 
-# warmup settings   (seq restraints)
+# Temperization settings   (seq restraints)
 dyn = [None]*9
 dyn[1] = ("200 1 0", "20 1 0")
 dyn[2] = ("200 1 0", "10 1 0")

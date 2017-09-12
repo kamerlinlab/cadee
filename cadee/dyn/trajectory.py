@@ -625,7 +625,7 @@ class QdynPackage(object):
         elif '_dyn' in self.inputfiles[self.if_pos][0]:
             pass
         else:
-            logger.warning('Neither warmup, nor equlilbration nor fep: %s',
+            logger.warning('Neither temperization, nor equlilbration nor fep: %s',
                            (self.inputfiles[self.if_pos][0]))
 
     def compute(self):

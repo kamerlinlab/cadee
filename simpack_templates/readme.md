@@ -8,7 +8,7 @@ a free energy perturbation. The files included in a simpack are systematically n
 A simpack is a tarball containing files only (no directories).  
   
 The file names have their purpose encoded. See further down in the document for more information.
-1. Warmup Input Files __(0*.inp)__.  
+1. Temperization Input Files __(0*.inp)__.  
 2. Equlibration Files __(*eq.inp)__.  
 3. FEP Input Files __(*fep.inp)__.  
 4. EVB Analysis Files __(*.qana)__.  
@@ -29,7 +29,7 @@ Once, a simpack has been run ('cadee dyn'), the simpack contains output files:
 Often, additional files are included. To avoid interference with CADEE, it is absolutely __CRUCIAL to avoid filenames ending on *.inp__.
 Because these could easily be mistaken as Q-input files.
 
-##1 Warmup Input Files
+##1 Temperization Input Files
 The user is advised to add or remove file without adjusting *ceate_template_based_simpack.py*.  
  
 CADEE expects 8 files, named this way:    
@@ -52,7 +52,7 @@ Removing the sequence restraint on the protein.
 
 
 ##2 Equlibration Input Files
-To avoid confusion all files that are not part of the warmup, start with a 4-digit number. The default simpack for example,
+To avoid confusion all files that are not part of the temperization, start with a 4-digit number. The default simpack for example,
 the first equlibration lies in the file __1000_eq.inp__. The second equlibration is named __1010_eq.inp__. The third __1020_eq.inp__ etc.
 
 ##3 FEP Input Files
