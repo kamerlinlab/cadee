@@ -118,10 +118,19 @@ def analyse_with_qscripts(logfiles, results):
 
     t, qq_el = qads.get_q_energies("Q-Q", 2, percent_skip=10).get_columns(["Time", "El"])   # NOPEP8
     ts = qads.get_temps(percent_skip=10)
-    t_tot = ts.get_columns(["T_tot"])[0]
-    t_free = ts.get_columns(["T_free"])[0]
-    t_free_solute = ts.get_columns(["T_free_solute"])[0]
-    t_free_solvent = ts.get_columns(["T_free_solvent"])[0]
+    try:
+        t_tot = ts.get_columns(["T_tot"])[0]
+        t_free = ts.get_columns(["T_free"])[0]
+        t_free_solute = ts.get_columns(["T_free_solute"])[0]
+        t_free_solvent = ts.get_columns(["T_free_solvent"])[0]
+    except IndexError:
+        t_tot = 0
+        t_free = 0
+        t_free_solute = 0
+        t_free_solvent = 0
+        #TODO: Fix this properly.
+        #      Thanks for breaking the logfile for this nonsensical 'fix'.
+        logger.warning('Could not read temperatures from log file. Falling back to 0. Are you using Q6?')
 
     results.ene(np.mean(kin_e), np.mean(pot_e), np.mean(tot_e))
 
