@@ -397,7 +397,14 @@ class Worker(object):
 
     def _compute(self):
         """ Compute 1 step """
-        self._md.compute()
+        try:
+            self._md.compute()
+        except Exception as e:
+            logger.error('Computation step has failed. Backing files up ...')
+            logger.error(traceback.format_exc())
+            self._store()
+            raise
+
         if (time.time() - self.lastbackup) > MIN_BACKUP_INTERVAL:
             self._store()
 
