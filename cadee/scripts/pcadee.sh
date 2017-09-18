@@ -161,12 +161,14 @@ echo "This will use $(($CORES*$MAXTASK)) cores from $SLURM_NTASKS"
 
 echo ""
 echo ""
-echo " Will Distribute Jobs and start work in 1s: "
+echo "   Will Distribute Jobs and Start Work in 1 Second"
+echo "   ==============================================="
+echo ""
 
 sleep 1
 
 
-find $SIMPACK_FOLDER -name "*.tar" | xargs -i --max-procs=$MAXTASK bash -c "echo Start {}; $DIR/srunq.sh {}; echo End {}; exit"
+find $SIMPACK_FOLDER -name "*.tar" | xargs -i --max-procs=$MAXTASK bash -c "echo {}; $DIR/srunq.sh {}; echo {}; exit"
 
 echo ""
 echo ""

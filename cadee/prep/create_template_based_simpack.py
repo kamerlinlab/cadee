@@ -20,7 +20,7 @@ import tools
 __author__ = "Beat Amrein"
 __email__ = "beat.amrein@gmail.com"
 
-logger = logging.getLogger('create_inputs')
+logger = logging.getLogger('prep.create_inputs')
 
 
 #TODO: Make fep/temperization settings user adjustable
@@ -94,7 +94,7 @@ def walk(folder, tartemplate):
     os.chdir(folder)
     for fol in os.listdir('.'):
         os.chdir(folder)
-        logger.info('Create inputs for %s', fol)
+        logger.info('Creating input files for %s .', fol)
         try:
             os.chdir(fol)
         except:
@@ -103,7 +103,7 @@ def walk(folder, tartemplate):
             _create_inputs(tartemplate)
         except Exception as e:
             # TODO: Errorhandling
-            logger.warning('Exception %s happened in %s.', e, fol)
+            logger.warning('Exception %s happened in %s .', e, fol)
             raise
     os.chdir(wd)
 

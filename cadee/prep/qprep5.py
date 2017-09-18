@@ -21,7 +21,7 @@ from fep import create_fep
 __author__ = "Beat Amrein"
 __email__ = "beat.amrein@gmail.com"
 
-logger = logging.getLogger('mutate.qprep5')
+logger = logging.getLogger('prep.qprep5')
 
 
 NLC = '\n'
@@ -29,9 +29,9 @@ NLC = '\n'
 
 def check_input(qprep5_inp, qprep5_lib, outfile=False):
     """
-    Check if qprep5inputfile is ready to be used.
+    Check if qprep5 input file is ready to be used.
 
-    @param qprep5_inp:    qprep - inputfile to be tested.
+    @param qprep5_inp:    qprep - input file to be tested.
     @param qprep5_lib:    qprep - library - folder
     @param outfile:       file to write suggested fix
 
@@ -205,8 +205,8 @@ def check_input(qprep5_inp, qprep5_lib, outfile=False):
     else:
         if needs_mod:
             logger.warn(NLC + 'ERROR')
-            logger.info('Qprep5 - Inputfile* must be rewritten like this:')
-            logger.info('                  *' + qprep5_inp)
+            logger.info('Qprep5 - The input file (*) must be rewritten like this:')
+            logger.info('                  (*)' + qprep5_inp)
             logger.info(output)
             raise QprepInpError
             
@@ -237,7 +237,7 @@ def run_qprep5(qprep5inp, log, qprep5_exe=None):
         raise Exception('qprep5 does not exist:', qprep5_exe)
 
     if not os.path.isfile(qprep5inp):
-        logger.error('qprep5-inputfile does not exist: %s', qprep5inp)
+        logger.error('qprep5 input file does not exist: %s', qprep5inp)
         raise Exception('qprep5inp (mktop) file does not exist', qprep5inp)
 
     cmd = qprep5_exe + ' ' + qprep5inp + ' > ' + log + ' 2>&1'
@@ -262,7 +262,7 @@ def run_qprep5(qprep5inp, log, qprep5_exe=None):
 
 def topogen(qprep5inp, wtpdb, qprep5exe=None):
     """generate topology with qprep5inp and to reproduce wtpdb.
-    @param qprep5inp: qprep5-inputfile
+    @param qprep5inp: qprep5 input file
     @param wtpdb: qprep5-ed pdbfile
     @param in_pdb: inputpdb
     @param out_pdb: outputpdb
@@ -346,7 +346,7 @@ def get_qprep5_outputpdb(qprep5inp):
 
 
 def split_qprep5_inputfile(qprep5inp):
-    """return comment-freed inputfile"""
+    """return comment-freed input file"""
     bline = ''
     with open(qprep5inp) as fil:
         for line in fil:

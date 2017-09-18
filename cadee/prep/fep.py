@@ -19,7 +19,7 @@ from tools import get_pdb_atom, check_qprep_pdb, read_pdbatoms
 __author__ = "Beat Amrein"
 __email__ = "beat.amrein@gmail.com"
 
-logger = logging.getLogger('mutate.fep')
+logger = logging.getLogger('prep.fep')
 
 # ENUMS (easy reading)
 ATOMS = 1

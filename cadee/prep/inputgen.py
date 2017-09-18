@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-"""Generate Inputfiles
+"""Generate Input files
 
 
 Author: {0} ({1})
@@ -24,7 +24,7 @@ from tools import get_atomnumber
 __author__ = "Beat Amrein"
 __email__ = "beat.amrein@gmail.com"
 
-logger = logging.getLogger('mutate.inputgen')
+logger = logging.getLogger('prep.inputgen')
 
 # TO CONVERT A ODS INTO CSV, USE:
 #  soffice --headless --convert-to csv test.ods
@@ -83,7 +83,7 @@ def parse_pdbref(pdbref, pdbfilename):
                 if line[:4] == 'ATOM':
                     lastline = line
             if lastline == '':
-                raise(Exception, 'could not find any atom line in pdbfile')
+                raise(Exception, 'could not find any atom line in pdbfile.')
 
             if isint(lastline[6:11]):
                 part = int(lastline[6:11])
@@ -135,7 +135,7 @@ def walk(pdbfilename, csvfile, folder):
 
 
 def main(pdbfilename, csvfile):
-    """Genereate Inputfiles from csvfile"""
+    """Genereate Input files from csvfile"""
     # TODO: Rewrite in Clean
     def add_to_section(section, key, fn, value=None):
         """Add a key/value pair to section"""

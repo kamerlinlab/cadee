@@ -21,7 +21,7 @@ import time
 __author__ = "Beat Amrein"
 __email__ = "beat.amrein@gmail.com"
 
-logger = logging.getLogger('mutate.pyscwrl')
+logger = logging.getLogger('prep.pyscwrl')
 
 NLC = '\n'
 
@@ -253,7 +253,7 @@ def scwrl2(wtpdb, seq, wtfep, qprep5inp, immutable_resids=[]):
 
     :param wtpdb: wild-type pdb used as reference
     :param wtfep: wild-type fep used as reference
-    :param qprep5inp: qprep5-inputfile used to generate topology
+    :param qprep5inp: qprep5 input file used to generate topology
     :param immutable_resids: residues that will not be touched.
     :type wtpdb: str
     :type wtfep: str
@@ -313,7 +313,7 @@ def scwrl2(wtpdb, seq, wtfep, qprep5inp, immutable_resids=[]):
             if immutable in clash_resids:
                 clash_resids.remove(immutable)
 
-        logger.info('Clash-Score was: %s, will now re-scrwl and allow to change residues %s', clash_score, sorted(clash_resids))
+        logger.info('Clash-Score was: %s, will now re-run and allow Scwrl4 to modify residues %s.', clash_score, sorted(clash_resids))
 
         def backup(fil):
             if os.path.basename(fil) != fil:
@@ -342,12 +342,12 @@ def scwrl2(wtpdb, seq, wtfep, qprep5inp, immutable_resids=[]):
         # add clashing residues to sequence
         lseq = list(seq)
         for m in clash_resids:
-            logger.debug("Residue clashes: %s %s %s", m, m-1, len(seq))
+            logger.debug("Residue clashes: %s %s %s .", m, m-1, len(seq))
             if (m-1) >= len(lseq):
                 # residue that comes after the protein sequence!
                 # if solvent molecule, we should kill this residue in new4q.
                 if m in immutable_resids:
-                    logger.debug('keep residue number %s: is immutable', m)
+                    logger.debug('Keeping residue number %s: is immutable.', m)
                 else:
                     kill_residues.append(m)
                 continue
@@ -365,7 +365,7 @@ def scwrl2(wtpdb, seq, wtfep, qprep5inp, immutable_resids=[]):
         post_process_scwrlpdb(clash_resids, wtpdb, pdb_s4_out, new4q)
 
         for resi in kill_residues:
-            logger.debug('remove residue with number %s', resi)
+            logger.debug('Remove residue with number %s .', resi)
             kill_residue(new4q, resi)
 
         # new_clash_score, new_clash_resids = clash.clashscore_and_residues(clash_resids, open(new4q).readlines())  # NOPEP8
@@ -388,7 +388,7 @@ def scwrl2(wtpdb, seq, wtfep, qprep5inp, immutable_resids=[]):
             restore(seq_s4_in)
             restore(new4q)
     else:
-        logger.info('No clash detected')
+        logger.info('No clashes detected.')
 
     # use qprep5 to obtain smooth newq
     import qprep5
@@ -397,7 +397,7 @@ def scwrl2(wtpdb, seq, wtfep, qprep5inp, immutable_resids=[]):
     from fep import create_fep
     create_fep(wtpdb, wtfep, newq, outfep='mutant.fep')
 
-    logger.debug('timing: %s s', round(time.time()-start, 2))
+    logger.debug('Timing: %s s.', round(time.time()-start, 2))
 
 
 if __name__ == "__main__":

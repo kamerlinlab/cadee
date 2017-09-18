@@ -93,7 +93,7 @@ def pack_tarballs(parentdir, seeds=1):
             os.chdir(mutant)
         except OSError:
             continue
-        logger.info('Packing %s', mutant)
+        logger.info('Packing %s:', mutant)
         seedfile = _find_seed_file()
         if seedfile is not None:
             tempsf = seedfile + '.tmp'
@@ -177,13 +177,13 @@ def main():
     # TODO: load defaults from somewhere
     parser = argparse.ArgumentParser('CADEE: Simpack Preparation.')
 
-    # Minimum Inputfiles needed
+    # Minimum Input files needed
     parser.add_argument('wtpdb', action='store', type=argparse.FileType('r'),
                         help='a reference or wildtype pdbfile')
     parser.add_argument('wtfep', action='store', type=argparse.FileType('r'),
                         help='a reference or wildtype fepfile')
     parser.add_argument('qpinp', action='store', type=argparse.FileType('r'),
-                        help='the qprep5 inputfile to use')
+                        help='the qprep5 input file to use')
     parser.add_argument('qplib', action='store',
                         help='path to folder with the libraries for qpinp')
 
@@ -212,7 +212,7 @@ def main():
     parser.add_argument('--template', action='store', default=None, type=argparse.FileType('r'),
                         help='Create simpacks based on the provided template.')
     parser.add_argument('--trajcsv', action='store', default=False,
-                        help='A traj-csv file to use for inputfile generation. Experimental.')
+                        help='A traj-csv file to use for input file generation. Experimental.')
     parser.add_argument('--numseeds', action='store', default=4,
                         type=check_int_oneplus, help='number of seeds')
 
@@ -268,7 +268,7 @@ def main():
         try:
             qprep5.check_input(qpinp, qplib)
         except qprep5.QprepInpError:
-            logger.info('Will attempt to fix qprep5-input file: ')
+            logger.info('Will attempt to fix qprep5 input file: ')
             qpinp_parts = qpinp.split('.')
             qpinp_parts.insert(-1, 'new')
             qpinp_new = '.'.join(qpinp_parts)
@@ -364,23 +364,23 @@ def main():
         alascan.main(wtpdb, wtfep, qpinp, outfolder, radius)
 
     elif args.libmut is not None and len(args.libmut) > 0:
-        logger.info('Preparing libmut.')
+        logger.info('Preparing libmut - LIBrary MUTatagenesis.')
         mutants = []
 
         immutable = tools.get_fep_resids(wtpdb, wtfep)
 
         for seperatemut in range(len(args.libmut)):
             for mut in args.libmut[seperatemut]:
-                print(mut)
+                print(mut, "(+ native/wt)")
                 parts = mut.split(':')
                 resid = int(parts[0])
                 if resid in immutable:
-                    print("Fatal: Can not mutate %s, atoms of residue are in fepfile!", resid)
+                    print("Fatal: Can not mutate %s, atoms of residue are in the fepfile!", resid)
                     import sys
                     sys.exit(1)
                 lname = parts[1].upper()
                 aalib = config.SatLibs.get_lib(lname)
-                logger.debug('Will mutate residue %s to %s', resid, aalib)
+                logger.debug('Will mutate residue %s to %s.', resid, aalib)
                 mutants.append((resid, aalib))
 
             fasta = genseqs.get_fasta(wtpdb)
@@ -436,7 +436,7 @@ def main():
                     logger.info('Folder %s exists. Skipping ...', dirname)
                     continue
 
-                logger.info('Working on %s', dirname)
+                logger.info('Working on %s.', dirname)
 
                 seq = ''.join(nseq)
 
@@ -479,7 +479,7 @@ def main():
             import mutate.inputgen as inputgen
             inputgen.walk('mutant.pdb', args.trajcsv, outfolder)
             pack_tarballs(outfolder, seeds=args.numseeds)
-            print('Success! You find your simpacks in', outfolder)
+            print('Success! You find your simpacks in', outfolder, '.')
     else:
         if outfolder is None:
             print('If you want to create inputs, I dont know where they are!')
@@ -503,7 +503,7 @@ def main():
                 template = None
             inputgen.main(outfolder, template)
             pack_tarballs(outfolder, seeds=args.numseeds)
-            print('Success! You find your simpacks in', outfolder)
+            print('Success! You find your simpacks in', outfolder, '.')
 
 
 if __name__ == "__main__":

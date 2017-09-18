@@ -21,7 +21,7 @@ from config import NLC, ERR_USAGE, NATURAL_AA
 __author__ = "Beat Amrein"
 __email__ = "beat.amrein@gmail.com"
 
-logger = logging.getLogger('mutate.mergepdb')
+logger = logging.getLogger('prep.mergepdb')
 
 
 # not used, using babel instead

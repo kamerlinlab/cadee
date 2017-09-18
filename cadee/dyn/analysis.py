@@ -21,7 +21,7 @@ import numpy as np
 __author__ = "Beat Amrein, Miha Purg"
 __email__ = "beat.amrein@gmail.com, miha.purg@gmail.com"
 
-logger = tools.getLogger()
+logger = tools.getLogger('dyn.ana')
 
 DEBUG = True
 DEBUG = False
@@ -206,13 +206,13 @@ def main(mset, eqfil):
                                       mset.alpha, mset.hij)
             open(qana + ".mapped", 'w').write(str(results.items()))
         except AnalysisInternalError as aie:
-            logger.exception('Mapping failed because of reason: %s', aie)
+            logger.exception('Mapping failed because of reason: %s .', aie)
         except AnalysisError as ae:
-            logger.exception('Incomlete Energy or Logfiles: %s', ae)
+            logger.exception('Incomplete Energy or Logfiles: %s .', ae)
         except QScriptsError as qse:
-            logger.exception('QScripts Failed! Reason: %s', qse)
+            logger.exception('QScripts Failed! Reason: %s .', qse)
         except q_mapper.QMappingError as qme:
-            logger.exception('QMappingError! Reason: %s', qme)
+            logger.exception('QMappingError! Reason: %s .', qme)
     return True
 
 
@@ -349,10 +349,10 @@ def map_and_analyse(fils, mutant, replik, alpha, hij):
     else:
         logger.warning(
             'Could not find logfiles!'
-            'args %s', logs
+            ' %s .', logs
             )
         cleanup()
-        raise AnalysisError('Could not find all log- and energy files')
+        raise AnalysisError('Could not find all log- and energy files!')
 
     cleanup()
     return results

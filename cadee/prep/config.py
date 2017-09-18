@@ -15,7 +15,7 @@ import logging
 __author__ = "Beat Amrein"
 __email__ = "beat.amrein@gmail.com"
 
-logger = logging.getLogger('mutate.config')
+logger = logging.getLogger('prep.config')
 
 # ERROR/EXIT CODES
 ERR_USAGE = 1

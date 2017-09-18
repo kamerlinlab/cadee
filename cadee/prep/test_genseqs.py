@@ -19,7 +19,7 @@ import logging
 __author__ = "Beat Amrein"
 __email__ = "beat.amrein@gmail.com"
 
-logger = logging.getLogger('mutate.genseqs')
+logger = logging.getLogger('prep.genseqs')
 
 
 class MyGenseqsTests(unittest.TestCase):

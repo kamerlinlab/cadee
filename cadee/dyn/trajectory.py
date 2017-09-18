@@ -26,7 +26,7 @@ from tools import File
 __author__ = "Beat Amrein"
 __email__ = "beat.amrein@gmail.com"
 
-logger = tools.getLogger()
+logger = tools.getLogger('dyn.traj')
 
 # This class is running a simulation
 # Its essentially my python-implementation of submit.sh
@@ -39,7 +39,7 @@ logger = tools.getLogger()
 #       3: automatic mapping
 #       4: compress/uncompress pdbfile
 #       5: compress/uncompress topology
-#       6: compress/uncompress inputfiles
+#       6: compress/uncompress input files
 #       7: fastforward md.QdynPackage, when loaded
 #       8: mutation starting from just a sequence
 #       9: Add flag: has_failed use instead of rising exception
@@ -109,7 +109,7 @@ class WorkUnit(object):
 
         # inputs
         self.inputfile = inputfile
-        logger.debug('inputfile %s', self.inputfile[0])
+        logger.debug('Input file: %s', self.inputfile[0])
         self.restartfile = restartfile      # opt
         self.restraintfile = restraintfile  # opt
 
@@ -143,7 +143,7 @@ class WorkUnit(object):
             if os.path.exists(fname):
                 self.checklogfile()
                 if self.status != 0:
-                    logger.warning('logfile exists BUT status:%s', self.status)
+                    logger.warning('A log file exists BUT with status: %s !', self.status)
 
         if self.topology is None:
             logger.info(self.inputfile[0])
@@ -253,9 +253,9 @@ class WorkUnit(object):
                 files_section = True
 
         if not files_section:
-            logger.warning('fatal: no files section in inputfile %s',
+            logger.warning('Fatal: no files section in input file %s',
                            self.inputfile)
-            raise (Exception, 'fatal: no files section in inputfile')
+            raise (Exception, 'Fatal: no files section in input file')
 
     def run(self, exe):
         """ run simulation with executable exe """
@@ -280,7 +280,7 @@ class WorkUnit(object):
             subprocess.check_call([exe, ifname], stdout=open(ofname, 'w'))
             self.q_exitcode = 0
         except subprocess.CalledProcessError as exitstatus:
-            logger.warning('We have a non-zero exit status!', exitstatus)
+            logger.warning('Detected a non-zero exit status!', exitstatus)
             self.q_exitcode = exitstatus.returncode
 
         # check logfile
@@ -291,14 +291,14 @@ class WorkUnit(object):
         if self.status == 0 and self.q_exitcode == 0:
             return 0
         else:
-            logger.warning('We have a status %s %s %s', self.status,
+            logger.warning('Detected status %s %s %s', self.status,
                            'and an exitcode', self.q_exitcode)
             return self.status + self.q_exitcode
 
     def checklogfile(self):
         """ Check Logfile """
 
-        logger.debug("checking logfile")
+        logger.debug("Checking log file ...")
 
         # TODO: do something about hot atoms.
         #       eg  a) run longer
@@ -327,21 +327,21 @@ class WorkUnit(object):
                         log.append(line)
                 compress = True
         except IOError:
-            err = "Could not open logfile"
+            err = "Could not open log file!"
             logger.warning(err)
             self.errMsg += err
             self.status = ERR_LOG_INEXISTENT
             return ERR_LOG_INEXISTENT
 
         if len(log) > 5:
-            l5l = 'Last 5 Lines'
+            l5l = 'Last 5 lines of log file:'
             self.errMsg += NLC + l5l + NLC
             for logline in log[-5:]:
                 self.errMsg += len('Last 5 Lines') * ' ' + ">" + logline
             self.errMsg += "/" + 'Last 5 Lines' + NLC + NLC
 
         if len(log) < 100:
-            err = 'logfile is too short (less than 100 lines)'
+            err = 'The log file is too short (less than 100 lines)!'
             logger.warning(err)
             self.errMsg += err
             self.status = ERR_LOG_TOO_SHORT
@@ -374,7 +374,7 @@ class WorkUnit(object):
                         self.errMsg += err
                     self.hot_atoms += 1
             if allok != 1:
-                err = 'logfile is missing ' + str(NORMALTERM) + ' string!'
+                err = 'The log file is missing ' + str(NORMALTERM) + ' string!'
                 err += ' UNKNOWN ERROR '
                 self.errMsg += err
                 logger.warning(err)
@@ -429,7 +429,7 @@ class WorkUnit(object):
 
             if data.strip() == '':
                 if WorkUnit.DEBUG:
-                    logger.debug('Wont write empty file %s', fname)
+                    logger.debug('Wont write empty file %s !', fname)
                 continue
 
             # if os.path.isfile(fname):
@@ -440,9 +440,9 @@ class WorkUnit(object):
                 with open(fname, 'wb') as fil:
                     fil.write(data)
                 if WorkUnit.DEBUG:
-                    logger.debug('serialized: %s', fname)
+                    logger.debug('Serialized: %s .', fname)
             else:
-                logger.warning('Problem here: type(fname) == %s %s %s',
+                logger.warning('This might be a problem here: type(fname) == %s %s %s !',
                                type(fname), 'and type(data) ==', type(data))
                 raise (Exception, 'Expected: str() and str()')
 
@@ -451,9 +451,9 @@ class QdynPackage(object):
 
     def map_and_analyze(self, eqfil=None):
         if self.mapped is None:
-            logger.debug('mapping disabled')
+            logger.debug('Mapping disabled.')
         elif self.mapped is True:
-            logger.debug('is already mapped')
+            logger.debug('is already mapped (skipping)!')
             return True
         elif self.mapped is False:
             with tools.cd(self.path):
@@ -484,7 +484,7 @@ class QdynPackage(object):
                 fname = os.path.basename(fname)
                 return [fname, data]
             else:
-                logger.warning('could not find %s', fname)
+                logger.warning('Could not find %s .', fname)
                 os.system('ls')
                 raise 'FAILED'
         elif isinstance(fname, list) and len(fname) == 2:
@@ -500,7 +500,7 @@ class QdynPackage(object):
             if os.access(self.q_dyn5_exe, os.X_OK):
                 pass
             else:
-                raise (Exception, 'executable is not executable')
+                raise (Exception, 'executable is not executable!')
         else:
             raise (Exception, 'executable: is not file.')
 
@@ -511,7 +511,7 @@ class QdynPackage(object):
     def set_temp(self, temp):
         """ cd into temp """
         if not os.path.isdir(temp):
-            raise (Exception, 'you provided a path thats not a directory')
+            raise (Exception, 'you provided a path which is not a directory!')
         else:
             os.chdir(temp)
 
@@ -575,7 +575,7 @@ class QdynPackage(object):
             self.mapped = False
             self.map_settings = map_settings
 
-        logger.info('New qdyn package initialized.')
+        logger.info('Next qdyn simulation step initialized.')
 
     def stats(self, obj):
         if obj is None:
@@ -603,7 +603,7 @@ class QdynPackage(object):
         out += 'Work-Units:' + NLC
         for each in self.wus:
             out += ' WU: ' + str(each) + NLC
-        out += 'InputFiles:' + NLC
+        out += 'Input files:' + NLC
         for i in range(len(self.wus), len(self.inputfiles)):
             out += ' IF: ' + str(self.inputfiles[i]) + NLC
         out += '@  position:' + str(self.if_pos) + NLC
@@ -682,7 +682,7 @@ class QdynPackage(object):
                     self.check_exe()
 
                     if len(self.wus) != self.cwu.unitnumber:
-                        raise (Exception, 'discrepancy in inputfile order')
+                        raise (Exception, 'discrepancy in input file order')
 
                     if self.cwu.run(exe) == 0:
                         self.wus.append(self.cwu)
@@ -736,7 +736,7 @@ class QdynPackage(object):
                     elif ftype == 'energy':
                         self.filenames[ftype] = fname
                     else:
-                        raise (Exception, "Parse Inputfile: Unknown Filetype.")
+                        raise (Exception, "Parse Input File: Unknown Filetype.")
 
             if line.lower() == '[files]':
                 files_section = True

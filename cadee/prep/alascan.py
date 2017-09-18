@@ -23,7 +23,7 @@ import tools as tools
 __author__ = "Beat Amrein"
 __email__ = "beat.amrein@gmail.com"
 
-logger = logging.getLogger('mutate.alascan')
+logger = logging.getLogger('prep.alascan')
 
 # CONSTANTS (easy reading)
 ALA = ['N', 'H', 'CA', 'HA', 'CB', 'HB1', 'HB2', 'HB3', 'C', 'O']

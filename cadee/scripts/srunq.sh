@@ -10,7 +10,7 @@
 #              This script can be launched multiple times,
 #              to allow filling a compute node.
 #              The script extracts the simpack and then iterates
-#              the inputfiles (for simpack in *inp).
+#              the input files (for simpack in *inp).
 #
 # Installation: Put this script and the parent-script (pcadee.sh) into your $PATH.
 #               This script needs a SNIC enviroment to work correctly (see SETTINGS).
@@ -197,6 +197,7 @@ write " bkp int: $BACKUPINTERVAL"
 write " simpack: $SIMPACK"
 write " cores:   $CORES"
 write " exe:     $EXE"
+write "  md5sum: $(md5sum $(echo $EXE | rev | cut -d' '  -f1 | rev))"
 write " workdir: $PWD"
 write ""
 write ""
@@ -274,7 +275,7 @@ do
         # check if NAN?
         isnan ${file}.log
         # TODO: on-the-fly mapping
-        write "Zipping"
+        write "Zipping."
         gzip ${file}.log
         [ -f  "${file}.en" ] && gzip ${file}.en
         [[ ! -z $restraintname ]] && [[ -f "$restraintname" ]] && /bin/rm "$restraintname"

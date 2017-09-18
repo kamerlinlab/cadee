@@ -211,13 +211,13 @@ class LogFileHandler(logging.StreamHandler):
                     self.logfile.flush()
 
 
-def getLogger(logfile=None, level=logging.INFO):
+def getLogger(name, logfile=None, level=logging.INFO):
     """ Returns a logger, if the MPI module is available, with MPI """
 
     # frmt = '%(asctime)s - %(name)s - %(levelname)s - %s(lineno)s - %(message)s'  # NOPEP8
     frmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 
-    logger = logging.getLogger()
+    logger = logging.getLogger(name)
 
     if len(logger.handlers) > 0:
         return logger
@@ -555,7 +555,7 @@ class SqlDB(object):
 
     def commit(self):
         self.conn.commit()
-        logger.info('Committed SqlDB')
+        logger.info('Committed cadee.db.')
         self.last_commit = time.time()
 
     def add_row(self, results):
@@ -564,12 +564,12 @@ class SqlDB(object):
         try:
             self.cursor.execute(self.template, results)
         except ValueError as e:
-            logger = getLogger()
+            logger = getLogger(__name__)
             logger.critical('Unable to store rows; ValueError %s', e)
             logger.critical('template: %s', self.template)
             logger.critical('results:  %s', results)
         except ProgrammingError as e:
-            getLogger().exception('ProgrammingError %s', results)
+            getLogger(__name__).exception('ProgrammingError %s', results)
         if self.last_commit + self.commit_interval < time.time() :
             self.commit()
 
@@ -577,4 +577,4 @@ class SqlDB(object):
         self.commit()
 
 
-logger = getLogger()
+logger = getLogger(__name__)

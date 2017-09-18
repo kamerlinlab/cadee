@@ -36,18 +36,19 @@ import mpi
 import tools
 import trajectory
 
+logger = tools.getLogger('dyn')
+
 if mpi.mpi:
     from mpi4py import MPI
 else:
-    tools.getLogger().fatal('You can not run ensemble simulation without MPI!')
+    logger.fatal('You can not run ensemble simulation without MPI!')
     sys.exit(1)
 
 __author__ = "Beat Amrein"
 __email__ = "beat.amrein@gmail.com"
 
-logger = tools.getLogger()
 
-logger.debug('start')
+logger.debug('Starting...')
 
 if mpi.rank == mpi.root:
     print('Rank 0: Started @', time.time(), mpi.get_info())
@@ -105,7 +106,7 @@ def log_speed(elapsed, fsize, name):
     @type fsize: float
     @type name: str
     """
-    msg = 'Backup-timing for {name}, {elapsed:5.3f}s, MB: {fsize:6.2f}'
+    msg = 'Backup timing for {name}, {elapsed:5.3f}s, MB: {fsize:6.2f}'
     msg += ' Speed: {speed} MB/s'
 
     msg = msg.format(name=name, elapsed=elapsed,
@@ -167,14 +168,14 @@ class Worker(object):
         logger.debug('Worker recd data')
 
         if data == 'SHUTDOWN':
-            logger.debug('Worker %s got shutdown signal!', mpi.rank)
+            logger.debug('Worker %s received shutdown signal!', mpi.rank)
             logger.debug('Create last backup ...')
             try:
                 self._store()
             except ValueError:
                 logger.exception(
                     'Could not store before exiting %s', self.archive)
-            logger.debug('Tell master that we exited...')
+            logger.debug('Message rank0 that this rank stopped.')
             self.comm.send('GoodBye!', self.root, tag=mpi.Tags.SHUTDOWN)
             self.alive = False
             sys.exit(0)
@@ -193,7 +194,7 @@ class Worker(object):
         WARNING: The md-object has to be re-initialized.
         """
 
-        logger.info('unpacking: %s', os.getcwd())
+        logger.info('Unpacking: %s.', os.getcwd())
         # UNIT: make sure there is only 1 executable in this folder
         logger.debug(str(os.listdir(os.getcwd())))
 
@@ -225,7 +226,7 @@ class Worker(object):
     def reinit(self, inputarchive, outputarchive):
         """
         @param tempdir: a path to store temporary files
-        @param inputarchive: tarchive with inputfiles
+        @param inputarchive: tarchive with input files
         @param outputarchive: tarchive where results are written to
         """
         try:
@@ -458,17 +459,17 @@ class Worker(object):
                                  err, self.archive)
                 raise
 
-        if (time.time() - self.lastbackup) > MIN_BACKUP_INTERVAL:
+        if (time.time() - self.lastbackup) > 10:  # TODO: Solve this more elegant than "if 10s difference --> bkp"
             self._store()
 
         if self._next():
-            logger.debug('run done, recursive loop')
+            logger.debug('Run done, recursive loop!')
             self.run()
 
 
 class Master(object):
     """MPI Rank 0:
-    Distributes Inputfiles to Worker Nodes.
+    Distributes simpacks to Worker Nodes.
     Receives MPI messages with tags defined in mpi.Tags.Class
     """
     def __init__(self, tempdir, start, simpackdir, force_map=False):
@@ -540,7 +541,7 @@ class Master(object):
         while not self.comm.Iprobe(source=MPI.ANY_SOURCE, tag=MPI.ANY_TAG):
             if sleeped == 0.5:
                 secs_since_start = round(time.time() - self.start, 1)
-                logger.info('sleeping @ %s s', secs_since_start)
+                logger.info('Sleeping @ %s s.', secs_since_start)
             # TODO: stats!
             #       observe ram usage
             #       observe free disk space
@@ -552,7 +553,7 @@ class Master(object):
             sleeped += self._manage_io()
 
         if sleeped > 0.5:
-            logger.info("slept for %s seconds", sleeped - 0.5)
+            logger.info("Slept for %s seconds.", sleeped - 0.5)
 
         # TODO: catch mpi.send errors properly
         try:
@@ -612,7 +613,7 @@ class Master(object):
                 pass
 
             if len(self.inputlist) == 0:
-                logger.info('send SHUTDOWN to %s', mpistatus.Get_source())
+                logger.info('Sending shutdown message to %s', mpistatus.Get_source())
                 self.comm.send('SHUTDOWN', mpistatus.Get_source(),
                                tag=mpi.Tags.INPUTS)
             else:
@@ -620,7 +621,7 @@ class Master(object):
                 self.comm.send(data, mpistatus.Get_source(),
                                mpi.Tags.INPUTS)
 
-            logger.info('number jobs left on queue %s', len(self.inputlist))
+            logger.info('Number of simpacks left on queue %s.', len(self.inputlist))
             if len(self.inputlist) < 10:
                 logger.debug('jobs left (list) %s', self.inputlist)
         elif tag == mpi.Tags.IO_REQUEST:
@@ -747,7 +748,7 @@ def parse_args():
     # TODO: load defaults from somewhere
     parser = argparse.ArgumentParser('CADEE: simpack computation.')
 
-    # Minimum Inputfiles needed
+    # Minimum input files needed
     parser.add_argument('simpackdir', action='store',
                         help='Path to folder with simpacks.')
     # Mapping
@@ -810,7 +811,7 @@ def parse_args():
             for fil in os.listdir(simpackdir):
                 if fil[-4:] == '.tar':
                     inputs.append(os.path.abspath(fil))
-                    logger.info('Add inputfile %s', fil)
+                    logger.info('Add input file %s', fil)
             os.chdir(wd)
 
             inputs = priorize(inputs)

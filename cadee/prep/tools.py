@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-"""Module providing tools for pdb, fep and general inputfile creation
+"""Module providing tools for pdb, fep and general input file creation
 
 Author: {0} ({1})
 
@@ -21,7 +21,7 @@ __author__ = "Beat Amrein"
 __email__ = "beat.amrein@gmail.com"
 
 logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger('mutate.tools')
+logger = logging.getLogger('prep.tools')
 
 # ENUMS (easy reading)
 ATOMS = 1
@@ -435,12 +435,12 @@ def get_last_pdb_atom_number(pdb):
         if line[:6] == 'ATOM  ' or line[:6] == 'HETATM':
             lastline = line
     if lastline == '':
-        raise(Exception, 'could not find any atom line in pdbfile')
+        raise(Exception, 'Could not find any atom line in pdbfile.')
 
     if isint(lastline[6:11]):
         index = int(lastline[6:11])
     else:
-        errmsg = 'could not get integer for last ATOM-line in pdbfile'
+        errmsg = 'Could not get integer for last ATOM-line in pdbfile.'
         logger.error(errmsg)
         raise(Exception, errmsg)
     return index

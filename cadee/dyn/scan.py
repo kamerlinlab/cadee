@@ -20,7 +20,7 @@ ALPHABETIC = True
 
 
 class Scan():
-    """ Class to scan a folder for Q inputfiles. """
+    """ Class to scan a folder for Q input files. """
     # TODO: Better Error Handling
     SKIP_INTERMEDIATES = False
     SKIP_INTERMEDIATES = True
@@ -135,7 +135,7 @@ class Scan():
         """
         search for files
            AND
-        search and read inputfiles ('.inp') into memory.
+        search and read input files ('.inp') into memory.
         """
         self.files = {}
         self.restart = {}
@@ -165,11 +165,11 @@ class Scan():
                 num = fn.split("_")[0]
                 if not isint(num):
                     print('skipping', fn)
-                    # TODO properly check if this file is a qdyn-inputfile
+                    # TODO properly check if this file is a qdyn input file
                     #      (eg grep for [MD])
                     lines = []
                 else:
-                    # TODO: check if the inputfile is a qdyn5 inputfile
+                    # TODO: check if the input file is a qdyn5 input file
                     #       (eg. is first non-comment line [MD]?
                     lines = Scan.read_input_file(fn)
                     (self.final[fn], self.restart[fn],
@@ -275,7 +275,7 @@ class Scan():
         """ raise Exception if any outputfile (ene, final, dcd) is written 2x"""
         for d in self.final, self.energy, self.trajectory:
             if d[fn] is not None and d[fn] in self.usedfiles:
-                warnmsg = " InputfileError: Outputfile: '" + str(d[fn])
+                warnmsg = " InputFileError: Outputfile: '" + str(d[fn])
                 warnmsg += "' written by '" + str(self.usedfiles[d[fn]])
                 warnmsg += "' is overwritten by '" + str(fn) + "'"
                 raise OutputOverWriteWarning(warnmsg)
@@ -283,8 +283,8 @@ class Scan():
                 self.usedfiles[d[fn]] = fn
 
     def scan(self):
-        """ Scan folder for inputfiles. Only 1 START 
-        (independent inputfiles-strand) is supported.
+        """ Scan folder for input files. Only 1 START
+        (independent input files strand) is supported.
         """
 
 

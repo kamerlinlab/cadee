@@ -8,8 +8,16 @@
 
 # Version 0.8.1
 
-TEMP=/tmp
-TEMP=/scratch
+
+if [ -d /scratch ]
+then
+    echo "Using /scratch for temporary files."
+    TEMP=/scratch
+else
+    echo "Using /tmp for temporary files."
+    TEMP=/tmp
+fi
+
 
 function usage(){
 echo "Usage:
@@ -58,9 +66,11 @@ TMPFOLDER="/$TEMP/$$"
 if [ -d $TMPFOLDER ]
 then
     echo "TEMPORARY FOLDER EXISTS. $TMPFOLDER"
-    echo "STOP."
+    echo "STOP. (You may try to remove it)."
     exit
 fi
+
+simpack="$(cd "$(dirname "$1")"; pwd)/$(basename "$1")"
 
 mkdir -p $TMPFOLDER
 cd $TMPFOLDER
@@ -74,7 +84,7 @@ trap finish INT TERM
 pwd
 
 set +e
-tar xf $1
+tar xf $simpack
 tarexit=$?
 set -e
 
@@ -156,7 +166,7 @@ for file in $(/bin/ls *_dyn*.log.gz ||true) $(/bin/ls *_eq.log.gz||true) $(/bin/
 do
     if [ ! -f "${file%.log.gz}.re" ]
     then
-        echo "logfile exists, but no restartfile. removing outpuffiles of $file ..."
+        echo "The logfile exists, but there is no restartfile. Removing outpuffiles of $file ..."
         /bin/rm -v $file
         /bin/rm -f -v "${file%.log.gz}.dcd"
         /bin/rm -f -v "${file%.log.gz}.en.gz"
@@ -255,7 +265,7 @@ then
     gzip *en
 fi
 
-echo "Simpack: $1: "
+echo -n "$simpack: "
 if [ $found -gt 0 ]
 then
     echo "Found $found issues! Overwriting simpack ..."
@@ -278,10 +288,10 @@ then
     	esac
 	done
     fi
-    tar cf $1 *
+    tar cf $simpack *
     echo "Repacking Done. Ready for resubmission."
 else
-    echo "No Problems with Simpack. Awesome!"
+    echo "No Problems with this simpack. Awesome!"
 fi
 
 finish

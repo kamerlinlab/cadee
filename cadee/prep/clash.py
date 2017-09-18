@@ -17,7 +17,7 @@ import sys
 __author__ = "Beat Amrein"
 __email__ = "beat.amrein@gmail.com"
 
-logger = logging.getLogger('cadee.prep.clash')
+logger = logging.getLogger('prep.clash')
 
 BACKBONE = ['H', 'N', 'O', 'C', 'CA']
 IGNORE_BB = True

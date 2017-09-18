@@ -22,7 +22,7 @@ import config
 __author__ = "Beat Amrein"
 __email__ = "beat.amrein@gmail.com"
 
-logger = logging.getLogger('mutate.genseqs')
+logger = logging.getLogger('prep.genseqs')
 
 # ERROR/EXIT CODES
 ERR_USAGE = 1
