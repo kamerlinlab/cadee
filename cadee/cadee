@@ -147,36 +147,8 @@ elif cmd == 'ana' or cmd == 'analyse' or cmd == 'analyze' or cmd == 'a':
 
 
 elif cmd == 'tool' or cmd == 't':
-    def tool_usage(badtool=False):
-        print()
-        if badtool:
-            print('Error')
-	    print('    Unknown Tool:', badtool)
-        print('    Available Tools: lossy_repack(lr) | repair_simpack(rs)')
-        sys.exit(1)
-
-    if len(sys.argv) < 2:
-        tool_usage()
-
-    subcmd = sys.argv[1].lower()
-    sys.argv.remove(subcmd)
-    sys.argv.remove(sys.argv[0])
-    import os
-   
-    shell_command = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'scripts')
-
-    if   subcmd == 'delete_tempfiles' or subcmd == 'dt':
-        shell_command = os.path.join(shell_command, 'delete_tempfiles.sh')
-    elif subcmd == 'lossy_repack'     or subcmd == 'lr':
-        shell_command = os.path.join(shell_command, 'lossy_repack.sh')
-    elif subcmd == 'repair_simpack'   or subcmd == 'rs':
-        shell_command = os.path.join(shell_command, 'repair_simpack.sh')
-    else:
-        tool_usage(badtool=subcmd)
-
-    shell_command = shell_command + " " + " ".join(sys.argv)
-    
-    os.system(shell_command)
+    import cadee.scripts.tools as tools
+    tools.main(sys.argv)
 
 else:
     usage()
