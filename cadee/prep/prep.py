@@ -179,9 +179,9 @@ def main():
 
     # Minimum Input files needed
     parser.add_argument('wtpdb', action='store', type=argparse.FileType('r'),
-                        help='a reference or wildtype pdbfile')
+                        help='a reference or wild-type pdbfile')
     parser.add_argument('wtfep', action='store', type=argparse.FileType('r'),
-                        help='a reference or wildtype fepfile')
+                        help='a reference or wild-type fepfile')
     parser.add_argument('qpinp', action='store', type=argparse.FileType('r'),
                         help='the qprep5 input file to use')
     parser.add_argument('qplib', action='store',
@@ -205,8 +205,8 @@ def main():
                         help='make sure that exactly N mutants are created')
 
     # TODO: check that this works:
-    parser.add_argument('--no_wildtype', action='store_false', default=False,
-                        help='dont run the wildtype alanine')
+    parser.add_argument('--no_wild_type', action='store_false', default=False,
+                        help='dont run the wild-type alanine')
 
     # Input Generator Options
     parser.add_argument('--template', action='store', default=None, type=argparse.FileType('r'),

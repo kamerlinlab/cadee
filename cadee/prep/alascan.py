@@ -193,7 +193,7 @@ def main(wtpdb, wtfep, qprep5inp, outputfolder,
             while os.path.isdir(failedfolder):
                 failedfolder += "1"
             shutil.move(raw_mut_folder, failedfolder)
-            logger.warning('FEP-generation failed, moved to %s', failedfolder)
+            logger.warning('FEP-generator failed, moved to %s', failedfolder)
             continue
 
 

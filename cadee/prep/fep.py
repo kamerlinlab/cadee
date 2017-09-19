@@ -65,7 +65,7 @@ def _rewrite_fep_section(wtlist, mutdict, line, output, section):
             parts[1] = mutdict[wtlist[int(parts[1])]]
         except KeyError:
             logger.error('FEPFile/PDBFile missmatch:')
-            logger.error('Could not find %s in wildtypepdb!',
+            logger.error('Could not find %s in wild-type pdbfile!',
                          wtlist[int(parts[1])])
             raise
         except IndexError:
@@ -111,7 +111,7 @@ def _rewrite_fep_section(wtlist, mutdict, line, output, section):
 
 
 def create_fep(wtpdb, wtfep, mutpdb, outfep=None):
-    """Create FEP file with wildtype pdb, wildtype fep, and mutant pdb.
+    """Create FEP file with wild-type pdb, wild-type fep, and mutant pdb.
     NOTE: Both wtpdb and mutpdb must be output of Qprep5.
 
     If outfep is None, the fepfile is printed to stdout.

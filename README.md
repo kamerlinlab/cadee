@@ -57,9 +57,9 @@ python setup.py install --user                          # install for current us
 ## Workflow 
 # 1: Generate Inputs (simpacks)
 1. Prerequisites:
-    i)   pdbfile generated with qprep5
-    ii)  fepfile for qprep5
-    iii) qprep5-inputfile, you used to generate pdbfile in i)
+    i)   PDB file generated with qprep5
+    ii)  FEP file for/of reference/wild-type
+    iii) qprep5-inputfile, you used to generate PDB file in i)
     iv)  path to the folder with the libraries you used to generate the inputfiles.
 
 2. Then, check if CADEE accepts your inputfiles:
