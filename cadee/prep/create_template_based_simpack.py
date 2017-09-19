@@ -112,7 +112,7 @@ def main(folder, templatetar=None):
 
     if templatetar is None:
         templatetar = os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                                   '../lib/template_12ns.tar.bz2')
+                                   '../lib/simpack_template_12ns_100ps_8000ps_4160ps.tar.bz2')
 
     if not os.path.isfile(templatetar):
         raise Exception('Template-Tar does not exist:', templatetar)
