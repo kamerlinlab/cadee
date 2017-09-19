@@ -10,7 +10,7 @@ import cadee.executables.exe as exe
 print('Welcome to CADEE Pre-Setup Check.')
 print()
 
-QEXES=['qdyn5', 'qprep5', 'qfep5']
+QEXES=['qdyn5', 'qprep5', 'qfep5', 'qcalc5']
 qexedir=os.path.join(os.path.dirname(os.path.abspath(__file__)), 'cadee/executables/q/')
 
 def installation_failed():
