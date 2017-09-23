@@ -106,13 +106,17 @@ def log_speed(elapsed, fsize, name):
     @type fsize: float
     @type name: str
     """
-    msg = 'Backup timing for {name}, {elapsed:5.3f}s, MB: {fsize:6.2f}'
-    msg += ' Speed: {speed} MB/s'
 
-    msg = msg.format(name=name, elapsed=elapsed,
-                     fsize=fsize, speed=fsize/elapsed)
+
+
+    msg = 'Backup timing {elapsed:5.3f}s, MB: {fsize:6.2f} Speed: {speed:6.2f} MB/s'
+
+    msg = msg.format(elapsed=elapsed, fsize=fsize, speed=(fsize/elapsed))
+
+    if name is None:
+        logger.debug(msg)
+        return
     logger.info(msg)
-
 
 class Worker(object):
     """ MPI - Worker
@@ -180,7 +184,7 @@ class Worker(object):
             self.alive = False
             sys.exit(0)
         else:
-            logger.info('Worker reinitializing.')
+            logger.debug('Worker reinitializing.')
             intar, outtar = data
             self.reinit(intar, outtar)
             return True
@@ -194,7 +198,7 @@ class Worker(object):
         WARNING: The md-object has to be re-initialized.
         """
 
-        logger.info('Unpacking: %s.', os.getcwd())
+        logger.debug('Unpacking to: %s.', os.getcwd())
         # UNIT: make sure there is only 1 executable in this folder
         logger.debug(str(os.listdir(os.getcwd())))
 
@@ -229,6 +233,9 @@ class Worker(object):
         @param inputarchive: tarchive with input files
         @param outputarchive: tarchive where results are written to
         """
+
+        logger.info('Working on %s.', inputarchive)
+
         try:
             shutil.rmtree(self.tmp)
             del self._md
@@ -280,6 +287,8 @@ class Worker(object):
 
         logger.debug('Initialized on %s, in %s',
                      hostname(), os.getcwd())
+
+
 
     def _check_files_to_store(self):
         """
@@ -680,7 +689,7 @@ def main(inputs, alpha=None, hij=None, force_map=None, simpackdir=None):
     tempdir = os.path.join(tmp, 'cadee')
     tempdir = os.path.join(tempdir, str(os.getpid()))
 
-    logger.info("Working directory of rank %s: %s", mpi.rank, tempdir)
+    logger.debug("Working directory of rank %s: %s", mpi.rank, tempdir)
 
     if mpi.rank == 0:
         start = time.time()
@@ -738,7 +747,7 @@ def priorize(inputs):
     inputs.extend(prio2)
     inputs.extend(prio3)
     inputs.extend(prio9)
-    logger.info('Prioritized')
+    logger.info('Prioritized.')
     #for each in inputs:
     #    print(each)
     return inputs
@@ -811,7 +820,7 @@ def parse_args():
             for fil in os.listdir(simpackdir):
                 if fil[-4:] == '.tar':
                     inputs.append(os.path.abspath(fil))
-                    logger.info('Add input file %s', fil)
+                    logger.info('Add input file %s.', fil)
             os.chdir(wd)
 
             inputs = priorize(inputs)

@@ -275,7 +275,8 @@ class WorkUnit(object):
         # run q
         start = time.time()
         cmd = exe + " " + ifname
-        logger.info("%s %s", hostname(), cmd)
+        logger.info("%s", ifname)
+        logger.debug("%s %s", hostname(), cmd)
         try:
             subprocess.check_call([exe, ifname], stdout=open(ofname, 'w'))
             self.q_exitcode = 0

@@ -187,8 +187,8 @@ class LogFileHandler(logging.StreamHandler):
 
         logging.StreamHandler.__init__(self)
 
-        msg = 'Logger created: Logfile: %s, MPI: %s, Rank: %s'
-        self.emit(msg % (self.logfile, mpi.mpi, mpi.rank))
+        #msg = 'Logger created: Logfile: %s, MPI: %s, Rank: %s'
+        #self.emit(msg % (self.logfile, mpi.mpi, mpi.rank))
 
     def emit(self, record):
         if isinstance(record, str):
