@@ -1,6 +1,6 @@
 # Installing CADEE on the Rackham Cluster
 
-The intel, mpi and openbabel modules are loaded:
+The intel, mpi and Open Babel modules are loaded:
 
 ```
 module add intel/17.4 intelmpi/17.4 openbabel

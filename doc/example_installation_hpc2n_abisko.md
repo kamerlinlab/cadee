@@ -1,12 +1,12 @@
 # Installing CADEE on the Abisko Cluster
 
-The intel, mpi and openbabel modules are loaded:
+The intel, mpi and Open Babel modules are loaded:
 
 ```
 module add intel/2017b iimpi/2017b
 ```
 
-On HPC2N, openbabel is not installed. We therefor need download and compile it:
+On HPC2N, Open Babel is not installed. We therefor need download and compile it:
 ```
 cd ~/pfs
 wget  https://sourceforge.net/projects/openbabel/files/openbabel/2.4.1/openbabel-2.4.1.tar.gz
@@ -18,7 +18,7 @@ cmake ../
 make
 cd bin
 ```
-Next the openbabel binaries are added to ~/.bashrc
+Next the Open Babel binaries are added to ~/.bashrc
 ```
 echo export PATH="$PWD:\$PATH" >> ~/.bashrc
 source ~/.bashrc
