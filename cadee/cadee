@@ -173,4 +173,5 @@ elif cmd == '--help':
     usage(0)
 
 else:
+    print('Unknown command: "{0}".'.format(cmd))
     usage()
