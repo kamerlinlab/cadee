@@ -82,12 +82,6 @@ case "$MACHINE_NAME" in
     ;;
 
 
-"beat-ThinkPad-X1-Carbon-3rd")
-    # UNTESTE!
-    export EXE="mpiexec -n $CORES qdyn5p"
-    ;;
-
-
 "")
     echo "This job is not running in SNIC environment."
     ;;
@@ -96,6 +90,8 @@ case "$MACHINE_NAME" in
 *)
     echo "THIS CLUSTER IS UNKNOWN!"
     echo "I will not add modules"
+
+    export EXE="mpiexec.mpich -n $CORES $(which qdyn5p)"
     ;;
 
 
