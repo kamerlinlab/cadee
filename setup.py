@@ -1,10 +1,26 @@
 from __future__ import print_function
 
+"""
+CADEE: Computer-Aided Directed Enzyme Evolution
+
+To install CADEE type: "python setup.py install"
+or for a single user "python setup.py install --user"
+
+Author: {0} ({1})
+
+This program is part of CADEE, the framework for
+Computer-Aided Directed Evolution of Enzymes.
+
+"""
+
 from setuptools import setup
 
 import os
 import sys
 from glob import glob
+
+__author__ = "Beat Amrein"
+__email__ = "beat.amrein@gmail.com"
 
 execfile('cadee/version.py')
 
