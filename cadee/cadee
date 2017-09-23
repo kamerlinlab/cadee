@@ -61,6 +61,8 @@ def usage():
         print('                    mpirun -n X cadee dyn')
         print('                   mpiexec -n X cadee dyn')
         print('                   X == Number of cores to use; 2+.')
+    if '--help' in sys.argv:
+        sys.exit(0)
     sys.exit(1)
 
 if len(sys.argv) < 2:
