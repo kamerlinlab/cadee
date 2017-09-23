@@ -50,7 +50,7 @@ def greeter():
 greeter()
 
 
-def usage():
+def usage(exitcode=1):
     if rank0:
         print()
         print()
@@ -61,9 +61,7 @@ def usage():
         print('                    mpirun -n X cadee dyn')
         print('                   mpiexec -n X cadee dyn')
         print('                   X == Number of cores to use; 2+.')
-    if '--help' in sys.argv:
-        sys.exit(0)
-    sys.exit(1)
+    sys.exit(exitcode)
 
 if len(sys.argv) < 2:
     usage()
@@ -170,6 +168,9 @@ elif cmd == 'ana' or cmd == 'analyse' or cmd == 'analyze' or cmd == 'a':
 elif cmd == 'tool' or cmd == 't':
     import cadee.tools.tools as tools
     tools.main(sys.argv)
+
+elif cmd == '--help':
+    usage(0)
 
 else:
     usage()
