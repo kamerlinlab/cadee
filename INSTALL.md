@@ -10,7 +10,7 @@ CADEE the framework of Computer-Aided Directed Enzyme Evolution.
 - Storage: 6-12 GB per mutant
 - *nix like OS (GNU/Linux, MacOSX)
 - Python Version 2.7
-- Fortran Compiler, C Compiler, OpenMPI Compiler, MPI Launcher, git, openbabel 2.3, pip
+- Fortran Compiler, C Compiler, OpenMPI Compiler, MPI Launcher, git, Open Babel, pip
   ```  
   sudo apt-get install gfortran gcc openmpi-bin mpich git openbabel python-pip
   ```
@@ -20,7 +20,7 @@ While CADEE itself is free software, it requires non-free components.
 The MD engine that CADEE is relying on is Q5 which is free for academic users.  
 
 For mutations other than wild-type testing and alanine-scans, CADEE requires SCWRL4,  
-which is free for Non-Commerical usage.
+which is also free for Non-Commerical usage.
 - Q:
   Obtain a License for Q: (Free for Non-Commercial use)
     http://www.icm.uu.se/cbbi/aqvist-lab/q/  
