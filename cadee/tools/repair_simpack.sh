@@ -21,7 +21,15 @@ fi
 
 function usage(){
 echo "Usage:
-    $0 /path/to/tararchive.tar [ [ --force ] || [ --checkene ] ]
+"
+
+if [ $(echo $0 | grep python | wc -l) -eq 1 ]
+then
+    echo "    cadee tool repair_simpack /path/to/tararchive.tar [ [ --force ] || [ --checkene ] ]"
+else
+    echo "    $0 /path/to/tararchive.tar [ [ --force ] || [ --checkene ] ]"
+fi
+echo "
 
     This script will ...
 

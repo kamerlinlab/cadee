@@ -5,6 +5,9 @@ from setuptools import setup
 import os
 import sys
 from glob import glob
+
+execfile('cadee/version.py')
+
 import cadee.executables.exe as exe
 
 print('Welcome to CADEE Pre-Setup Check.')
@@ -74,7 +77,7 @@ for qexe in QEXES:
             q_missing(qexe)
 
 if not exe.which('babel'):
-    print('ERROR: Could not find babel. Please install openbabel and ensure the binaries are in $PATH.')
+    print('ERROR: Could not find babel. Please install Open Babel and ensure the binaries are in $PATH.')
     print('       Using Ubuntu try:  sudo apt-get install openbabel')
     print('       for Homebrew try:  brew install open-babel')
     installation_failed()
@@ -87,15 +90,15 @@ if not exe.which('Scwrl4'):
 
 
 setup(name='cadee',
-      version='0.8.5',
+      version=__version__,
       description='Computer Aided Directed Evolution of Enzymes',
       url='http://github.com/kamerlinlab/cadee',
       author='Beat Anton Amrein',
       author_email='beat.amrein@gmail.com',
       license='GPLv2',
-      packages=['cadee', 'cadee.ana', 'cadee.dyn', 'cadee.prep', 'cadee.executables', 'cadee.qscripts', 'cadee.scripts' ],
+      packages=['cadee', 'cadee.ana', 'cadee.dyn', 'cadee.prep', 'cadee.executables', 'cadee.qscripts', 'cadee.tools' ],
       py_modules=['cadee'],
-      package_data={'cadee': ['lib/*', 'qscripts/lib/*', 'qscripts/REAMDE.md', 'qscripts/LICENSE.txt', 'executables/q/q*', 'scripts/*']},
+      package_data={'cadee': ['lib/*', 'qscripts/lib/*', 'qscripts/REAMDE.md', 'qscripts/LICENSE.txt', 'executables/q/q*', 'tools/*', 'version.py']},
       install_requires=[
           ['mpi4py==1.3.1'],
           ['numpy'],

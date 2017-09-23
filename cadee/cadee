@@ -31,6 +31,25 @@ if not os.path.isfile(os.path.join(qscripts,'qscripts.cfg')):
     import cadee.qscripts.qscripts_config
 
 
+def greeter():
+    if rank0:
+        import cadee.version as version
+        print("""
+
+             ___   _   ___  ___ ___   
+            / __| /_\ |   \| __| __|  Computer-Aided Directed
+           | (__ / _ \| |) | _|| _|   Enzyme Evolution
+            \___/_/ \_\___/|___|___|  
+                                      v. {0}
+
+   (C) Copyright 2017 Beat Anton Amrein & Shina Caroline Lynn Kamerlin
+     """.format(version.__version__))
+
+
+  
+greeter()
+
+
 def usage():
     if rank0:
         print()
@@ -71,10 +90,10 @@ elif cmd == 'dynp' or cmd == 'dp':
     print()
     print('Note: This is always less efficient than running "dyn".')
     print()
-    print('These scripts assume a SNIC SLURM environment. And needs adjustments to neatly run on your machine.')
+    print('These tools assume a SNIC SLURM environment. And needs adjustments to neatly run on your machine.')
     print('')
-    print('The scripts consist of a SLURM submission script $CADEE_DIR/cadee/scripts/pcadee.sh')
-    print('And a "task" script $CADEE_DIR/cadee/scripts/srunq.sh')
+    print('The scripts consist of a SLURM submission script $CADEE_DIR/cadee/tools/pcadee.sh')
+    print('And a "task" script $CADEE_DIR/cadee/tools/srunq.sh')
     print()
     print("    To run a simulation, adjust pcadee.sh to your needs and make sure that srunq.sh is in your $PATH.")
     print()
@@ -147,7 +166,7 @@ elif cmd == 'ana' or cmd == 'analyse' or cmd == 'analyze' or cmd == 'a':
 
 
 elif cmd == 'tool' or cmd == 't':
-    import cadee.scripts.tools as tools
+    import cadee.tools.tools as tools
     tools.main(sys.argv)
 
 else:
