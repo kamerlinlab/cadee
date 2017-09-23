@@ -42,7 +42,6 @@ class SatLibs(object):
     CHARGED.extend(PLUS)
     NEUTRAL = ['S', 'T', 'N', 'Q']
     POLAR = CHARGED[:]
-    POLAR.extend(CHARGED)
 
     @staticmethod
     def get_lib(name):
