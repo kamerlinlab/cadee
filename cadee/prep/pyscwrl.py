@@ -289,7 +289,7 @@ def scwrl2(wtpdb, seq, wtfep, qprep5inp, immutable_resids=[]):
     seq_s4_in = 'scwrl.seq'
     new4q = "new4q.pdb"
 
-    logger.debug("start babel: %s %s", os.getcwd(), os.system('ls'))
+    logger.debug("start babel: %s %s", os.getcwd(), os.listdir(os.getcwd()))
 
     # prepare files for scwrl4
     babel_pdb_for_scwrl(wtpdb, proper_pdb=babeled_pdb, proper_fasta='wt.fasta')
@@ -313,7 +313,7 @@ def scwrl2(wtpdb, seq, wtfep, qprep5inp, immutable_resids=[]):
             if immutable in clash_resids:
                 clash_resids.remove(immutable)
 
-        logger.info('Clash-Score was: %s, will now re-run and allow Scwrl4 to modify residues %s.', clash_score, sorted(clash_resids))
+        logger.info('Clash-Score was: {0:2.4g}, will now re-run and allow Scwrl4 to modify residues {1}'.format(clash_score, sorted(clash_resids)))
 
         def backup(fil):
             if os.path.basename(fil) != fil:

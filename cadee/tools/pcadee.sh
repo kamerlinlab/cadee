@@ -91,7 +91,7 @@ case "$MACHINE_NAME" in
     echo "THIS CLUSTER IS UNKNOWN!"
     echo "I will not add modules"
 
-    export EXE="mpiexec.mpich -n $CORES $(which qdyn5p)"
+    export EXE="mpiexec -n $CORES $(which qdyn5p)"
     ;;
 
 

@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from __future__ import print_function
 
 """Shell Tool Launcher
 Author: {0} ({1})
@@ -11,14 +12,24 @@ import sys
 import os
 
 
-def main(args):
-    def tool_usage(badtool=False):
+def main(args, caller):
+    def tool_usage(exitcode):
         print()
-        if badtool:
-            print('Error')
-            print('    Unknown Tool:', badtool)
-        print('    Available Tools: lossy_repack(lr) | repair_simpack(rs)')
-        sys.exit(1)
+        print()
+        print('Available Tools:')
+        print()
+        print('       repair_simpack (rs):')
+        print('           Description: Unpack and Repack a simpack to fix errors.')
+        print('           Caution:     WILL OVERWRITE ORIGINAL SIMPACK!')
+        print('           Example:     {0} repair_simpack /full/path/to/simpacks/wt_0.tar'.format(caller))
+        print()
+        print('       lossy_repack (lr):')
+        print('           Description: Utility to repack simpacks lossy, deleting dcd files.')
+        print('                        Will apply to all simpacks in current working directory')
+        print('           Example:     cd /full/path/to/simpacks; {0} lossy_repack'.format(caller))
+        print('')
+        print('')
+        sys.exit(exitcode)
 
     if len(args) < 2:
         tool_usage()
@@ -36,9 +47,16 @@ def main(args):
         shell_command = os.path.join(shell_command, 'lossy_repack.sh')
     elif subcmd == 'repair_simpack'   or subcmd == 'rs':
         shell_command = os.path.join(shell_command, 'repair_simpack.sh')
+    elif subcmd == '--help':
+        tool_usage(0)
     else:
-        tool_usage(badtool=subcmd)
+        print("Unknown command:", subcmd)
+        tool_usage(1)
 
     shell_command = shell_command + " " + " ".join(sys.argv)
 
     os.system(shell_command)
+
+if __name__ == "__main__":
+    main(sys.argv, sys.argv[0])
+

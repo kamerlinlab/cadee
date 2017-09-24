@@ -142,24 +142,27 @@ elif cmd == 'ana' or cmd == 'analyse' or cmd == 'analyze' or cmd == 'a':
         sys.exit(1)
 
     subcmd = sys.argv[1].lower()
-    sys.argv.remove(subcmd)
-    sys.argv.remove(sys.argv[0])
 
     import os
 
+    if len(sys.argv) < 2:
+        ana_usage()
+
+    fullcmd = [cmd + ' ' + subcmd]
+    fullcmd.extend(sys.argv[2:])
 
     if subcmd == 'cat':
         import cadee.ana.cat_cadee_dbs as cat
-        cat.main(sys.argv[1:])
+        cat.main(sys.argv[2:])
     elif subcmd == 'csv_exo':
         import cadee.ana.export_to_csv as csv
-        csv.main(sys.argv[1:], 'exo')
+        csv.main(fullcmd, 'exo')
     elif subcmd == 'csv':
         import cadee.ana.export_to_csv as csv
-        csv.main(sys.argv[1:])
+        csv.main(fullcmd)
     elif subcmd == 'alanize':
         import cadee.ana.alanize as alanyze
-        alanyze.main(sys.argv[1])
+        alanyze.main(sys.argv[2])
     else:
         ana_usage()
     
@@ -167,7 +170,7 @@ elif cmd == 'ana' or cmd == 'analyse' or cmd == 'analyze' or cmd == 'a':
 
 elif cmd == 'tool' or cmd == 't':
     import cadee.tools.tools as tools
-    tools.main(sys.argv)
+    tools.main(sys.argv, 'cadee tool')
 
 elif cmd == '--help':
     usage(0)

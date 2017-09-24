@@ -33,6 +33,8 @@ def main(args, what='barr_forw'):
     """
 
     if len(args) != 3:
+        print("Invalid arguments", args)
+        print()
         print("Usage: \n  " + os.path.basename(__file__) + " cadee.db output.csv")
         sys.exit(1)
 

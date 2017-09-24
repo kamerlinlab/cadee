@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# This script is will compress a simpack lossy, by deleting all dcd files and removing information on us runs.
+# This script is will compress a simpack lossy, by deleting all dcd files.
 
 # Author: Beat Amrein, beat.amrein@gmail.com
 # This script is part of CADEE.
@@ -25,8 +25,6 @@ do
     tar xf $wd/$fil
     echo compress
     rm -f *dcd
-    rm -f *{1..9}_fep.re
-    rm -f *{1..9}_fep.en.gz
     echo hash
     md5sum * > hashes.md5
     echo repack

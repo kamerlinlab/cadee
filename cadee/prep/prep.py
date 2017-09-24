@@ -368,6 +368,13 @@ def main():
         mutants = []
 
         immutable = tools.get_fep_resids(wtpdb, wtfep)
+        
+        outfolder = os.getcwd()+'/libmut'
+        
+        if os.path.exists(outfolder):
+            outputfolder_exists('libmut', outfolder)
+        else:
+            os.mkdir(outfolder)
 
         for seperatemut in range(len(args.libmut)):
             for mut in args.libmut[seperatemut]:
@@ -390,12 +397,6 @@ def main():
 
             sequences = genseqs.genseq2(fasta, mutants)
 
-            outfolder = os.getcwd()+'/libmut'
-
-            if os.path.exists(outfolder):
-                outputfolder_exists('libmut', outfolder)
-            else:
-                os.mkdir(outfolder)
 
             def get_scwrl_seq(wt, new):
                 name = ''
