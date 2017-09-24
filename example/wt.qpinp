@@ -1,0 +1,26 @@
+!load ligand library
+readlib libraries/ligand.qlib
+! load protein library
+readlib libraries/qoplsaa.qlib
+! load force field parameters
+readprm libraries/qoplsaa.qprm
+! load structure
+readpdb rawmut.pdb
+! solvate with 20 Å sphere
+boundary
+1
+495:C6
+20
+solvate
+495:C6
+20
+1
+HOH
+! generate topology
+maketop     mutant.top         
+! save topology
+writetop    mutant.top
+! write a PDB file with all atoms
+writepdb     mutant.pdb               y
+! done
+quit

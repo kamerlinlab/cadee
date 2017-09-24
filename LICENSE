@@ -1,16 +1,30 @@
-Copyright (c) 2016, Beat Anton Amrein, beat.amrein@gmail.com
+CADEE: Computer-Aided Directed Evolution of Enzymes.
 
-CADEE is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; Version 2.0
-of the License.
+Copyright (c) 2017, Beat Anton Amrein (beat.amrein@gmail.com) 
+                    and
+                    Shina Caroline Lynn Kamerlin (kamerlin@icm.uu.se)
 
-CADEE is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-General Public License for more details.
+This program is free software; you can redistribute it and/or modify it under 
+the terms of the GNU General Public License as published by the Free Software 
+Foundation; version 2 of the License.
 
-You should have received a copy of the GNU General Public
-License along with this library; if not, write to the
-Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
-Boston, MA  02110-1301, USA.
+This program is distributed in the hope that it will be useful, but WITHOUT 
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS 
+FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with 
+this program; if not, write to the Free Software Foundation, Inc., 51 Franklin 
+Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+
+
+                                   * * * * *
+
+
+The development of CADEE is mainly funded by academic research grants. To help 
+us fund development, we humbly ask that you cite the CADEE paper:
+
+* CADEE: Computer-Aided Directed Evolution of Enzymes
+  Amrein BA, Steffen-Munsberg F, Szeler I, Purg M, Kulkarni Y & Kamerlin SCL. 
+  IUCrJ 4, 50-64 (2017)
+  DOI: 10.1107/S2052252516018017

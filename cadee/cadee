@@ -1,0 +1,180 @@
+#!/usr/bin/env python
+from __future__ import print_function
+
+"""CADEE Command Line Interface.
+
+Use this script to prepare, run and analyze CADEE simulations.
+
+Author: {0} ({1})
+
+This program is part of CADEE, the framework for
+Computer-Aided Directed Evolution of Enzymes.
+"""
+
+__author__ = "Beat Amrein"
+__email__ = "beat.amrein@gmail.com"
+
+import sys
+import os
+import cadee.dyn.mpi as mpi
+if mpi.mpi:
+    if mpi.rank == 0:
+        rank0 = True
+    else:
+        rank0 = False
+else:
+    rank0=True
+
+# checking if qscripts is configured, or configure it now:
+qscripts = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'qscripts')
+if not os.path.isfile(os.path.join(qscripts,'qscripts.cfg')):
+    import cadee.qscripts.qscripts_config
+
+
+def greeter():
+    if rank0:
+        import cadee.version as version
+        print("""
+
+             ___   _   ___  ___ ___   
+            / __| /_\ |   \| __| __|  Computer-Aided Directed
+           | (__ / _ \| |) | _|| _|   Enzyme Evolution
+            \___/_/ \_\___/|___|___|  
+                                      v. {0}
+
+   (C) Copyright 2017 Beat Anton Amrein & Shina Caroline Lynn Kamerlin
+     """.format(version.__version__))
+
+
+  
+greeter()
+
+
+def usage(exitcode=1):
+    if rank0:
+        print()
+        print()
+        print('Usage:')
+        print('                   cadee [ prep(p) | dyn(d) | ana(a) | tool(t) ]')
+        print()
+        print('       Multi Core Tasks:')
+        print('                    mpirun -n X cadee dyn')
+        print('                   mpiexec -n X cadee dyn')
+        print('                   X == Number of cores to use; 2+.')
+    sys.exit(exitcode)
+
+if len(sys.argv) < 2:
+    usage()
+
+cmd = sys.argv[1].lower()
+sys.argv.remove(cmd)
+
+if cmd == 'dyn' or cmd == 'd':
+    import cadee.dyn.mpi as mpi
+    if mpi.size < 2:
+        print()
+        print()
+        print('Error: X must be greater or equal 2')
+        usage()
+
+    import cadee.dyn.ensemble as ens
+    ens.parse_args()
+
+elif cmd == 'dynp' or cmd == 'dp':
+    print('')
+    print('This information is for UNIX power users and admins.')
+    print('++++++++++++++++++++++++++++++++++++++++++++++++++++')
+    print('')
+    print('')
+    print('A parallel (pcadee) laucher script exists, to run cadee with qdyn5*p*.')
+    print()
+    print('Note: This is always less efficient than running "dyn".')
+    print()
+    print('These tools assume a SNIC SLURM environment. And needs adjustments to neatly run on your machine.')
+    print('')
+    print('The scripts consist of a SLURM submission script $CADEE_DIR/cadee/tools/pcadee.sh')
+    print('And a "task" script $CADEE_DIR/cadee/tools/srunq.sh')
+    print()
+    print("    To run a simulation, adjust pcadee.sh to your needs and make sure that srunq.sh is in your $PATH.")
+    print()
+    print('    Then run or submit pcadee (bash pcadee.sh or sbatch pcadee.sh).')
+    usage()
+
+elif cmd == 'prep' or cmd == 'p':
+    import cadee.prep.prep as prep
+    prep.main()
+
+elif cmd == 'ana' or cmd == 'analyse' or cmd == 'analyze' or cmd == 'a':
+
+    if len(sys.argv) < 2:
+        usage()
+
+
+    def ana_usage():
+        if rank0:
+            print()
+            print()
+            print('Analysis Options:')
+            print('                   cadee ana [ cat | alanize | csv | csv_exo ]')
+            print()
+            print('       cat:')
+            print('           Description: Utility to conCATenate two or more cadee.db files.')
+            print('           Example:     cadee ana cat cadee1.db cadee2.db ')
+            print('                        (Will create "concat_cadee.db")')
+            print('')
+            print('       alanize:         ____             ___')
+            print('           Description: ALANine scan analIZEer: Visual alanine scan analysis.')
+            print('           Example:     cadee ana alanize')
+            print('                        (Will create "index.html" file. Open with a browser.)')
+            print('')
+            print('       csv:')
+            print('           Description: Export activation barrier to a csv file.')
+            print('           Example:     cadee ana csv cadee.db dGstar.csv')
+            print('                        (Will create "dGstar.csv" file)')
+            print('')
+            print('       csv_exo:')
+            print('           Description: Export gibbs free energy a csv file.')
+            print('           Example:     cadee ana csv cadee.db ddG.csv')
+            print('                        (Will create "ddG.csv" file)')
+            print('')
+
+            # print('      cadee [ dyn(d) | dynp(dp) | prep(p) | analyse(a) | tool(t) ]')
+        sys.exit(1)
+
+    subcmd = sys.argv[1].lower()
+
+    import os
+
+    if len(sys.argv) < 2:
+        ana_usage()
+
+    fullcmd = [cmd + ' ' + subcmd]
+    fullcmd.extend(sys.argv[2:])
+
+    if subcmd == 'cat':
+        import cadee.ana.cat_cadee_dbs as cat
+        cat.main(sys.argv[2:])
+    elif subcmd == 'csv_exo':
+        import cadee.ana.export_to_csv as csv
+        csv.main(fullcmd, 'exo')
+    elif subcmd == 'csv':
+        import cadee.ana.export_to_csv as csv
+        csv.main(fullcmd)
+    elif subcmd == 'alanize':
+        import cadee.ana.alanize as alanyze
+        alanyze.main(sys.argv[2])
+    else:
+        ana_usage()
+    
+
+
+elif cmd == 'tool' or cmd == 't':
+    import cadee.tools.tools as tools
+    tools.main(sys.argv, 'cadee tool')
+
+elif cmd == '--help':
+    usage(0)
+
+else:
+    print('Unknown command: "{0}".'.format(cmd))
+    usage()
