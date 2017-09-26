@@ -242,18 +242,17 @@ then
     
     numsizes=$(/bin/ls -l *.en | awk '{print $5}' | sort | uniq -c | sort -g | wc -l)
     
-    if [ $numsizes -gt 2 ]
+    if [ $numsizes -gt 1 ]
     then
-        echo "Epected 2 files sizes, found $numsizes ."
+        echo "Expected 1 files size, found $numsizes ."
         echo "There is a problem in this simpack ..."
         size1=$(/bin/ls -l *.en | awk '{print $5}' | sort | uniq -c | sort -g | awk '{ print $2}' | tail -n 1 )
-        size2=$(/bin/ls -l *.en | awk '{print $5}' | sort | uniq -c | sort -g | awk '{ print $2}' | tail -n 2 | head -n 1)
 
-        echo "  iii) Comparing to assigned sizes; Size1=$size1 and Size2=$size2."
+        echo "  iii) Comparing to assigned sizes; Size=$size1."
         for fil in $(/bin/ls *.en)
         do  
             size=$(cat $fil | wc -c)
-            if [[ $size -ne $size1 ]] && [[ $size -ne $size2 ]]
+            if [[ $size -ne $size1 ]]
             then    
                 let found+=1
         	noext="${fil/.en/}"
