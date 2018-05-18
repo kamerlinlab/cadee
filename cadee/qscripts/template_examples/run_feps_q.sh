@@ -1,7 +1,7 @@
 #!/bin/bash 
 CORES=4
 
-QBIN=$(which qdyn5p)
+QBIN=$(which Qdyn6p)
 
 OK="(\033[0;32m   OK   \033[0m)"
 FAILED="(\033[0;31m FAILED \033[0m)"

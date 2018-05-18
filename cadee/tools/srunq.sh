@@ -1,12 +1,12 @@
 #!/bin/bash
-# Compute one Simpack with qdyn5p.
+# Compute one Simpack with Qdyn6p.
 #
 # Author: Beat Amrein
 # Email: beat.amrein@gmail.com
 # Date: 05.Mar 2017
 # Version: 0.2
 # 
-# Description: Run a simulation with qdyn5p (parallel).
+# Description: Run a simulation with Qdyn6p (parallel).
 #              This script can be launched multiple times,
 #              to allow filling a compute node.
 #              The script extracts the simpack and then iterates

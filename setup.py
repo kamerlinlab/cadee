@@ -29,7 +29,7 @@ import cadee.executables.exe as exe
 print('Welcome to CADEE Pre-Setup Check.')
 print()
 
-QEXES=['qdyn5', 'qprep5', 'qfep5', 'qcalc5']
+QEXES=['Qdyn6', 'Qprep6', 'Qfep6', 'Qcalc6']
 qexedir=os.path.join(os.path.dirname(os.path.abspath(__file__)), 'cadee/executables/q/')
 
 def installation_failed():
@@ -43,23 +43,23 @@ def installation_failed():
 
 def q_missing(exe):
     """
-    Print message about the missing Q5-executable and call installation_failed.
+    Print message about the missing Q6-executable and call installation_failed.
     """
     print()
-    print('ERROR: Could not find {0}. Please install Q5.'.format(exe))
+    print('ERROR: Could not find {0}. Please install Q6.'.format(exe))
     print("")
     print('       Copy the binaries to {0}.'.format(qexedir))
     print('       -OR-')
     print('       Ensure the binaries are in $PATH.'.format(exe))
     print()
-    print('       Q5 can be obtained from {0}.'.format('http://www.icm.uu.se/cbbi/aqvist-lab/q'))
+    print('       Q6 can be obtained free of charge from {0}.'.format('https://github.com/qusers/Q6'))
     installation_failed()
 
 if not (sys.version_info[0] == 2 and sys.version_info[1] == 7):
     print('Need Python 2.7')
     installation_failed()
 
-# There are many versions of executables named qdyn5.
+# There are many versions of executables named Qdyn6.
 # CADEE should stick to one version, so include with the cadee installation.
 for qexe in QEXES:
     if not exe.which(qexe, True):

@@ -18,14 +18,12 @@ CADEE: The framework of Computer-Aided Directed Enzyme Evolution.
 
 ##External Executables:
 While CADEE itself is distributed as free software (GPLv2), it requires non-free (external) executables.
-These are primarily the MD engine that CADEE is relying on, __Q5__, which is free for academic users. 
-Additionally, CADEE requires for some functionality __SCWRL4__, which is also free for academic users.  
+These are primarily the MD engine that CADEE is relying on, __Q6__, which is free and open source software. Additionally, CADEE requires for some functionality __SCWRL4__, which is also free for academic users.  
 
 For mutations other than wild-type testing and alanine-scans, CADEE requires SCWRL4,  
 which is also free for Non-Commerical usage.
 - Q:
-  Obtain a License for Q: (Free for Non-Commercial use)
-    http://www.icm.uu.se/cbbi/aqvist-lab/q/  
+  https://github.com/qusers/Q6
   Download and compile Q. Optionally install to $PATH.
 - SCWRL4: 
   Obtain a License for SCWRL4: (Free for Non-Commercial use)
