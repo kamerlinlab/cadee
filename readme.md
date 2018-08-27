@@ -53,12 +53,10 @@ Here the suggested steps:
 Clone into CADEE:
  
 `git clone https://github.com/kamerlinlab/cadee cadee`
-```
 
 Install CADEE:
 
 `python setup.py install --user`
-
 
 
 ## Workflow 
