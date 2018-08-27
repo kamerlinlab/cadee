@@ -8,7 +8,7 @@ CADEE is a framework for computational directed evolution of enzymes. The method
 
 
 
-##System Requirements
+## System Requirements
 - *nix like OS (we use GNU/Linux)
 - CPU: 1 or more core-weeks per mutant
 - Storage: 6-12 GB per mutant
@@ -26,7 +26,7 @@ CADEE is a framework for computational directed evolution of enzymes. The method
 
 # Installation
 
-###External Executables:
+### External Executables:
 Both, CADEE and the the MD engine that CADEE is relying on [**Q6**](https://doi.org/10.1016/j.softx.2017.12.001) are free and opensource software licensed under the GPL v2. However, CADEE requires for some functionality __SCWRL4__, which is proprietary altough licensed free to academic users (research purposes).
 
 For mutations other than wild-type testing and alanine-scans, CADEE requires SCWRL4.
@@ -43,7 +43,7 @@ For mutations other than wild-type testing and alanine-scans, CADEE requires SCW
 - Open Babel: Open Babel is a free program that can be installed with the os. The command in the 'System Requirements' section will install Open Babel automatically.
 
   
-###Download and Install CADEE:
+### Download and Install CADEE:
 We recommend using git to install CADEE, so that future releases of CADEE are easily accessible.
 
 Here the suggested steps:
@@ -62,7 +62,7 @@ Install CADEE:
 
 
 ## Workflow 
-   Please see the [workflow](./workflow.md) document. 
+   See the [workflow](./workflow.md) document. 
 
 ## How to Cite this Work
 The development of CADEE is mainly funded by academic research grants. To help 
