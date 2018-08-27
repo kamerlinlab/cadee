@@ -1,0 +1,9 @@
+sed -i "s/qdyn5/Qdyn6/g" ./setup.py  ./cadee/qscripts/template_examples/run_feps_q.sh ./cadee/qscripts/q_genrelax.py ./cadee/executables/q/readme ./cadee/executables/q/testq.sh ./cadee/tools/srunq.sh ./cadee/tools/pcadee.sh ./cadee/dyn/scan.py ./cadee/dyn/ensemble.py  ./cadee/cadee ./simpack_templates/readme.md 
+sed -i "s/qprep5/Qprep6/g" ./setup.py  ./cadee/qscripts/template_examples/run_feps_q.sh ./cadee/qscripts/q_genrelax.py ./cadee/executables/q/readme ./cadee/executables/q/testq.sh ./cadee/tools/srunq.sh ./cadee/tools/pcadee.sh ./cadee/dyn/scan.py ./cadee/dyn/ensemble.py  ./cadee/cadee ./simpack_templates/readme.md 
+sed -i "s/qcalc5/Qcalc6/g" ./setup.py  ./cadee/qscripts/template_examples/run_feps_q.sh ./cadee/qscripts/q_genrelax.py ./cadee/executables/q/readme ./cadee/executables/q/testq.sh ./cadee/tools/srunq.sh ./cadee/tools/pcadee.sh ./cadee/dyn/scan.py ./cadee/dyn/ensemble.py  ./cadee/cadee ./simpack_templates/readme.md 
+sed -i "s/qdum5/Qdum6/g" ./setup.py  ./cadee/qscripts/template_examples/run_feps_q.sh ./cadee/qscripts/q_genrelax.py ./cadee/executables/q/readme ./cadee/executables/q/testq.sh ./cadee/tools/srunq.sh ./cadee/tools/pcadee.sh ./cadee/dyn/scan.py ./cadee/dyn/ensemble.py  ./cadee/cadee ./simpack_templates/readme.md /readme.md 
+sed -i "s/qfep5/Qfep6/g" ./setup.py  ./cadee/qscripts/template_examples/run_feps_q.sh ./cadee/qscripts/q_genrelax.py ./cadee/executables/q/readme ./cadee/executables/q/testq.sh ./cadee/tools/srunq.sh ./cadee/tools/pcadee.sh ./cadee/dyn/scan.py ./cadee/dyn/ensemble.py  ./cadee/cadee ./simpack_templates/readme.md 
+
+sed -i "s/Q5/Q6/g" ./cadee/executables/q/readme ./INSTALL.md
+
+echo "Manual Edit of setup.py and readme.md"
