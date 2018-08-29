@@ -28,7 +28,7 @@
 #
 # 2015-11-04
 #
-# Generate relaxation inputs for qdyn5 
+# Generate relaxation inputs for Qdyn6 
 #
 # An example of a procedure file (only required argument) can be found in qscripts/template_examples/
 #

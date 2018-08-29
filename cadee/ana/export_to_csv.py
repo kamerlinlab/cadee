@@ -23,7 +23,7 @@ import sqlite3
 __author__ = "Beat Amrein, Miha Purg"
 __email__ = "beat.amrein@gmail.com, miha.purg@gmail.com"
 
-RUN_TYPE="medium"
+RUN_TYPE="us"    
 
 def main(args, what='barr_forw'):
     """
@@ -61,7 +61,7 @@ def main(args, what='barr_forw'):
     conn = sqlite3.connect(db)
     cursor = conn.cursor()
     try:
-        cursor.execute("SELECT mutant,replik,name,? FROM results WHERE feptype=?", (what, RUN_TYPE,))
+        cursor.execute("SELECT mutant,replik,name,? FROM results WHERE feptype=?", (what, RUN_TYPE))
     except sqlite3.DatabaseError as e:
         print("Error accessing the database: '%s' (%s)" % (db, e))
         sys.exit(1)
@@ -111,4 +111,4 @@ def main(args, what='barr_forw'):
     print("Success... Wrote %s..." % outcsv)
 
 if __name__ == "__main__":
-    main(sys.argv)
+    main(sys.argv[1:])

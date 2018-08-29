@@ -169,7 +169,7 @@ class Scan():
                     #      (eg grep for [MD])
                     lines = []
                 else:
-                    # TODO: check if the input file is a qdyn5 input file
+                    # TODO: check if the input file is a Qdyn6 input file
                     #       (eg. is first non-comment line [MD]?
                     lines = Scan.read_input_file(fn)
                     (self.final[fn], self.restart[fn],

@@ -5,14 +5,14 @@
 #SBATCH -n 16
 #SBATCH -t 24:00:00
 #
-# Compute a folder with Simpacks with parallel qdyn5p.
+# Compute a folder with Simpacks with parallel Qdyn6p.
 #
 # Author: Beat Amrein
 # Email: beat.amrein@gmail.com
 # Date: 22.Feb 2017
 # Version: 0.1
 # 
-# Description: Iterate trough a folder with Simpacks, using qdyn5p.
+# Description: Iterate trough a folder with Simpacks, using Qdyn6p.
 #              Make sure you first test and adjust the child-script (srunq.sh).
 #              Also note, that the child-script is expected to be placed in the
 #              same folder like this script (see DIR-var need to adjust this).
@@ -65,7 +65,7 @@ case "$MACHINE_NAME" in
 "rackham")
     ml intel/17.1 intelmpi/17.1 python/2.7.11
     export QPATH="/home/fabst747/qsource/bin"
-    export EXE="mpiexec -n $CORES -bind-to none $QPATH/qdyn5p"
+    export EXE="mpiexec -n $CORES -bind-to none $QPATH/Qdyn6p"
     ;;
 
 
@@ -78,7 +78,7 @@ case "$MACHINE_NAME" in
     fi
     module -v load pgi/14.3-0
     module -v load openmpi/pgi/1.8.1
-    export EXE="srun -n $CORES qdyn5p"
+    export EXE="srun -n $CORES Qdyn6p"
     ;;
 
 
@@ -91,7 +91,7 @@ case "$MACHINE_NAME" in
     echo "THIS CLUSTER IS UNKNOWN!"
     echo "I will not add modules"
 
-    export EXE="mpiexec -n $CORES $(which qdyn5p)"
+    export EXE="mpiexec -n $CORES $(which Qdyn6p)"
     ;;
 
 

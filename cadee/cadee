@@ -86,7 +86,7 @@ elif cmd == 'dynp' or cmd == 'dp':
     print('++++++++++++++++++++++++++++++++++++++++++++++++++++')
     print('')
     print('')
-    print('A parallel (pcadee) laucher script exists, to run cadee with qdyn5*p*.')
+    print('A parallel (pcadee) laucher script exists, to run cadee with Qdyn6*p*.')
     print()
     print('Note: This is always less efficient than running "dyn".')
     print()

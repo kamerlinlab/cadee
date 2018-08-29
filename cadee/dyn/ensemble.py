@@ -149,9 +149,9 @@ class Worker(object):
     def _executable(self):
         """ Create executable and mark it executable """
         from cadee.executables import exe
-        exe = exe.which('qdyn5')
+        exe = exe.which('Qdyn6')
         if exe is None:
-            raise 'qdyn5 not found'
+            raise 'Qdyn6 not found'
         self.exe = exe
 
     def _next(self):
